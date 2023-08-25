@@ -253,7 +253,7 @@ let prac_i = {
 
           text_color: 'white',
           show_start_time: 1150, // ms after the start of the trial
-          show_end_time: 1200,//出现50ms
+          //show_end_time: 1200,直到反应才消失刺激
           origin_center: true//带确定
         }
       ],
@@ -263,16 +263,18 @@ let prac_i = {
   trial_duration:2650,//结束时间，一共作答时间持续1500ms
   data:function(){return jsPsych.timelineVariable("identify")},
   on_finish: function(data){
-      data.correct_response = jsPsych.timelineVariable("identify", true)();
-      data.correct = data.correct_response == data.key_press;//0错1对
-      data.Image = jsPsych.timelineVariable("Image");
-      data.word = jsPsych.timelineVariable("word", true)();//加括号
-      data.condition = "prac_image_first"
+    data.correct_response = jsPsych.timelineVariable("identify", true)();
+    data.correct = data.correct_response == data.key_press;//0错1对
+    data.Image = jsPsych.timelineVariable("Image");
+    data.word = jsPsych.timelineVariable("word", true)();//加括号
+    data.target = "image"; 
+    data.test = "word";
+    data.condition = "prac_image_first"
   }
 },
 {
   data:{
-      screen_id: "feedback_test"//这里为反馈
+      screen_id: "feedback"//这里为反馈
   },
   type:jsPsychHtmlKeyboardResponse,
   stimulus:function(){
@@ -300,14 +302,100 @@ let prac_i = {
 ],
   timeline_variables: tb,
   randomize_order:true,
-  repetitions:2,//正是实验时改为6
+  repetitions:2,
   on_finish:function(){
       // $("body").css("cursor", "default"); //鼠标出现
   }
 }
 
 
+
+let formal_i = {
+  timeline:[
+  {
+  type:jsPsychPsychophysics, 
+  stimuli:[
+      {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1000// ms after the start of the trial
+      }, 
+      {
+          obj_type:"image",
+          file: function(){return jsPsych.timelineVariable("Image")},
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: 1000, // ms after the start of the trial
+          show_end_time: 1050,//出现50ms
+          origin_center: true//待确定
+      },//上一组end时间减去下一组show时间就是空屏的100ms
+      {
+          obj_type: 'text',
+          startX: "center",
+          startY: "center", //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+          },
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: 1150, // ms after the start of the trial
+          //show_end_time: 1200,直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+  choices: ['f', 'j'],
+  response_start_time:1150,//开始作答时间，第二个刺激开始计算
+  trial_duration:2650,//结束时间，一共作答时间持续1500ms
+  data:function(){return jsPsych.timelineVariable("identify")},
+  on_finish: function(data){
+      data.correct_response = jsPsych.timelineVariable("identify", true)();
+      data.correct = data.correct_response == data.key_press;//0错1对
+      data.Image = jsPsych.timelineVariable("Image");
+      data.word = jsPsych.timelineVariable("word", true)();//加括号
+      data.target = "image"; 
+      data.test = "word";
+      data.condition = "prac_image_first"
+  }
+},
+],
+  timeline_variables: tb,
+  randomize_order:true,
+  repetitions:2,
+  on_finish:function(){
+      // $("body").css("cursor", "default"); //鼠标出现
+  }
+}
+
+
+var feedback_p = {
+type: jsPsychHtmlKeyboardResponse,
+stimulus: function () {
+  let trials = jsPsych.data.get().filter(
+    [{ correct: true }, { correct: false }]
+  ).last(24); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+  //这里填入timeline_variables里面的trial数量
+  let correct_trials = trials.filter({
+    correct: true
+  });
+  let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+  let rt = Math.round(correct_trials.select('rt').mean());
+  return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                        <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+    "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>";
+}
+}
+
 timeline.push(information);
 timeline.push(Instructions1);
-timeline.push(prac_i);
+timeline.push(formal_i);
+timeline.push(feedback_p);
 jsPsych.run(timeline);
