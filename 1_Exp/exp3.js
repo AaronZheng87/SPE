@@ -4,7 +4,7 @@ const jsPsych = initJsPsych({
        type: naodao,
      }*/
      on_finish: function() {
-      jsPsych.data.get().localSave('csv', 'exp1' + info["ID"] + '.csv'); 
+      jsPsych.data.get().localSave('csv', 'exp3' + info["ID"] + '.csv'); 
       document.exitFullscreen(); // 退出全屏
       let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
             }
@@ -384,6 +384,8 @@ let formal_i = {
       data.word = jsPsych.timelineVariable("word", true)();//加括号
       data.target = "image"; 
       data.test = "word";
+      data.target_Xpos = jsPsych.timelineVariable("target_Xpos")
+      data.test_Xpos = jsPsych.timelineVariable("test_Xpos")
       data.condition = "prac_image_first"
   }
 },
