@@ -1,29 +1,29 @@
 const jsPsych = initJsPsych({
-    /* auto_update_progress_bar: true,
-     extensions: {
-       type: naodao,
-     }*/
-     on_finish: function() {
-      jsPsych.data.get().localSave('csv', 'exp3' + info["ID"] + '.csv'); 
-      document.exitFullscreen(); // 退出全屏
-      let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
-            }
-     });
+  /* auto_update_progress_bar: true,
+   extensions: {
+     type: naodao,
+   }*/
+  on_finish: function () {
+    jsPsych.data.get().localSave('csv', 'exp3' + info["ID"] + '.csv');
+    document.exitFullscreen(); // 退出全屏
+    let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
+  }
+});
 
 
 function permutation(arr, num) { //定义排列组合的function
-var r = [];
-(function f(t, a, n) {
-  if (n == 0) return r.push(t);
-  for (var i = 0, l = a.length; i < l; i++) {
-    f(t.concat(a[i]), a.slice(0, i).concat(a.slice(i + 1)), n - 1);
-  }
-})([], arr, num);
-return r;
+  var r = [];
+  (function f(t, a, n) {
+    if (n == 0) return r.push(t);
+    for (var i = 0, l = a.length; i < l; i++) {
+      f(t.concat(a[i]), a.slice(0, i).concat(a.slice(i + 1)), n - 1);
+    }
+  })([], arr, num);
+  return r;
 }
-  
-  
-  
+
+
+
 var texts = ["自我", "朋友", "他人"]//储存文字
 
 var key = ['f', 'j']//按键
@@ -36,9 +36,9 @@ let view_texts_images = [];
 
 var timeline = [] //设置一个时间线
 
-const images = ['3_Stimuli/C_ambi40.png', 
-'3_Stimuli/S_ambi40.png', 
-'3_Stimuli/T_ambi40.png']
+const images = ['3_Stimuli/C_ambi40.png',
+  '3_Stimuli/S_ambi40.png',
+  '3_Stimuli/T_ambi40.png']
 const preload = {
   type: jsPsychPreload,
   images: images,
@@ -72,40 +72,30 @@ var basic_information = {
    `,
   choices: "ALL_KEYS",
 };
-timeline.push(basic_information);
 
-var basic_information = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: `
-   <p>本实验首先需要您填写一些基本个人信息。</p>
-   <p> <div style = "color: green"><按任意键至下页></div></p>
-   `,
-  choices: "ALL_KEYS",
-};
-timeline.push(basic_information);
 
 var info = []
 
 /* basic data collection jsPsychInstructions trial 被试基本信息收集 */
 var information = {
   timeline: [{
-  // 实验被试信息收集
-  type: jsPsychCallFunction, //探测被试显示器数据
-  func: function () {
-    if ($(window).outerHeight() < 500) {
-      alert("您设备不支持实验，请进入全屏模式。若已进入全屏，请换一台高分辨率的设备，谢谢。");
-      window.location = "";
+    // 实验被试信息收集
+    type: jsPsychCallFunction, //探测被试显示器数据
+    func: function () {
+      if ($(window).outerHeight() < 500) {
+        alert("您设备不支持实验，请进入全屏模式。若已进入全屏，请换一台高分辨率的设备，谢谢。");
+        window.location = "";
+      }
     }
-  }
-}, {
-  type: jsPsychSurveyHtmlForm,
-  preamble: "<p style =' color : white'>您的实验编号是</p>",
-  html: function () {
-    let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Name"] : "";
-    return "<p><input name='Q0' type='text' value='" + data + "' required/></p>";
-  },
-  button_label: "继续",
-  on_finish: function (data) {
+  }, {
+    type: jsPsychSurveyHtmlForm,
+    preamble: "<p style =' color : white'>您的实验编号是</p>",
+    html: function () {
+      let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Name"] : "";
+      return "<p><input name='Q0' type='text' value='" + data + "' required/></p>";
+    },
+    button_label: "继续",
+    on_finish: function (data) {
       info["ID"] = data.response.Q0;
       word = permutation(texts, 3) //对应的文字
       texts = word[parseInt(info["ID"]) % 6] //被试id除以6，求余数
@@ -121,31 +111,31 @@ var information = {
     }
 
   }
-, {
-  type: jsPsychHtmlButtonResponse,
-  stimulus: "<p style = 'color : white'>您的性别</p>",
-  choices: ['男', '女', '其他'],
-  on_finish: function (data) {
-    info["Sex"] = data.response == 0 ? "Male" : (data.response == 1 ? "Female" : "Other")
-  }
-}, {
-  type: jsPsychSurveyHtmlForm,
-  preamble: "<p style = 'color : white'>您的出生年</p>",
-  html: function () {
-    let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["BirthYear"] : "";
-    return `<p>
+    , {
+    type: jsPsychHtmlButtonResponse,
+    stimulus: "<p style = 'color : white'>您的性别</p>",
+    choices: ['男', '女', '其他'],
+    on_finish: function (data) {
+      info["Sex"] = data.response == 0 ? "Male" : (data.response == 1 ? "Female" : "Other")
+    }
+  }, {
+    type: jsPsychSurveyHtmlForm,
+    preamble: "<p style = 'color : white'>您的出生年</p>",
+    html: function () {
+      let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["BirthYear"] : "";
+      return `<p>
       <input name="Q0" type="number" value=${data} placeholder="1900~2023" min=1900 max=2023 oninput="if(value.length>4) value=value.slice(0,4)" required />
       </p>`
-  },
-  button_label: '继续',
-  on_finish: function (data) {
-    info["BirthYear"] = data.response.Q0;
-  }
-}, {
-  type: jsPsychSurveyHtmlForm,
-  preamble: "<p style = 'color : white'>您的教育经历是</p>",
-  html: function () {
-    return `
+    },
+    button_label: '继续',
+    on_finish: function (data) {
+      info["BirthYear"] = data.response.Q0;
+    }
+  }, {
+    type: jsPsychSurveyHtmlForm,
+    preamble: "<p style = 'color : white'>您的教育经历是</p>",
+    html: function () {
+      return `
               <p><select name="Q0" size=10>
               <option value=1>小学以下</option>
               <option value=2>小学</option>
@@ -156,18 +146,19 @@ var information = {
               <option value=7>博士</option>
               <option value=8>其他</option>
               </select></p>`
-  },
-  on_load: function () {
-    $("option[value=" + (["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"].indexOf(localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Education"] : "") + 1) + "]").attr("selected", true);
-  },
-  button_label: '继续',
-  on_finish: function (data) {
-    let edu = ["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"];
+    },
+    on_load: function () {
+      $("option[value=" + (["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"].indexOf(localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Education"] : "") + 1) + "]").attr("selected", true);
+    },
+    button_label: '继续',
+    on_finish: function (data) {
+      let edu = ["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"];
 
-    info["Education"] = edu[parseInt(data.response.Q0) - 1];
+      info["Education"] = edu[parseInt(data.response.Q0) - 1];
+    }
   }
-}
-] };
+  ]
+};
 
 
 
@@ -201,48 +192,48 @@ var Instructions1 = {
 
 
 tb = [//restore the trials
-  {Image:images[0], word:function(){return texts[0]}, identify:function(){return key[0]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[1], word:function(){return texts[1]}, identify:function(){return key[0]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[2], word:function(){return texts[2]}, identify:function(){return key[0]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
+  { Image: images[0], word: function () { return texts[0] }, identify: function () { return key[0] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[1], word: function () { return texts[1] }, identify: function () { return key[0] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[2], word: function () { return texts[2] }, identify: function () { return key[0] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
 
-  {Image:images[0], word:function(){return texts[1]}, identify:function(){return key[1]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[1], word:function(){return texts[2]}, identify:function(){return key[1]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[2], word:function(){return texts[0]}, identify:function(){return key[1]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
+  { Image: images[0], word: function () { return texts[1] }, identify: function () { return key[1] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[1], word: function () { return texts[2] }, identify: function () { return key[1] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[2], word: function () { return texts[0] }, identify: function () { return key[1] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
 
-  {Image:images[0], word:function(){return texts[2]}, identify:function(){return key[1]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[1], word:function(){return texts[0]}, identify:function(){return key[1]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[2], word:function(){return texts[1]}, identify:function(){return key[1]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
+  { Image: images[0], word: function () { return texts[2] }, identify: function () { return key[1] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[1], word: function () { return texts[0] }, identify: function () { return key[1] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[2], word: function () { return texts[1] }, identify: function () { return key[1] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
 
-  {Image:images[0], word:function(){return texts[0]}, identify:function(){return key[0]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[1], word:function(){return texts[1]}, identify:function(){return key[0]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
-  {Image:images[2], word:function(){return texts[2]}, identify:function(){return key[0]}, target_Xpos:X_pos[0], test_Xpos:X_pos[1]},
- // counterbalance of position
+  { Image: images[0], word: function () { return texts[0] }, identify: function () { return key[0] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[1], word: function () { return texts[1] }, identify: function () { return key[0] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  { Image: images[2], word: function () { return texts[2] }, identify: function () { return key[0] }, target_Xpos: X_pos[0], test_Xpos: X_pos[1] },
+  // counterbalance of position
 
- {Image:images[0], word:function(){return texts[0]}, identify:function(){return key[0]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[1], word:function(){return texts[1]}, identify:function(){return key[0]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[2], word:function(){return texts[2]}, identify:function(){return key[0]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
+  { Image: images[0], word: function () { return texts[0] }, identify: function () { return key[0] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[1], word: function () { return texts[1] }, identify: function () { return key[0] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[2], word: function () { return texts[2] }, identify: function () { return key[0] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
 
- {Image:images[0], word:function(){return texts[1]}, identify:function(){return key[1]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[1], word:function(){return texts[2]}, identify:function(){return key[1]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[2], word:function(){return texts[0]}, identify:function(){return key[1]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
+  { Image: images[0], word: function () { return texts[1] }, identify: function () { return key[1] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[1], word: function () { return texts[2] }, identify: function () { return key[1] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[2], word: function () { return texts[0] }, identify: function () { return key[1] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
 
- {Image:images[0], word:function(){return texts[2]}, identify:function(){return key[1]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[1], word:function(){return texts[0]}, identify:function(){return key[1]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[2], word:function(){return texts[1]}, identify:function(){return key[1]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
+  { Image: images[0], word: function () { return texts[2] }, identify: function () { return key[1] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[1], word: function () { return texts[0] }, identify: function () { return key[1] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[2], word: function () { return texts[1] }, identify: function () { return key[1] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
 
- {Image:images[0], word:function(){return texts[0]}, identify:function(){return key[0]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[1], word:function(){return texts[1]}, identify:function(){return key[0]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
- {Image:images[2], word:function(){return texts[2]}, identify:function(){return key[0]}, target_Xpos:X_pos[1], test_Xpos:X_pos[0]},
-  
+  { Image: images[0], word: function () { return texts[0] }, identify: function () { return key[0] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[1], word: function () { return texts[1] }, identify: function () { return key[0] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+  { Image: images[2], word: function () { return texts[2] }, identify: function () { return key[0] }, target_Xpos: X_pos[1], test_Xpos: X_pos[0] },
+
 ]
-;
+  ;
 
 let prac_i = {
-  timeline:[
-  {
-  type:jsPsychPsychophysics, 
-  stimuli:[
-      {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
           obj_type: 'cross',
           startX: "center", // location of the cross's center in the canvas
           startY: "center",
@@ -251,10 +242,10 @@ let prac_i = {
           line_color: 'white', // You can use the HTML color name instead of the HEX color.
           show_start_time: 500,
           show_end_time: 1000// ms after the start of the trial
-      }, 
-      {
-          obj_type:"image",
-          file: function(){return jsPsych.timelineVariable("Image")},
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
           startX: jsPsych.timelineVariable("target_Xpos"), // location of the cross's center in the canvas
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
@@ -262,8 +253,8 @@ let prac_i = {
           show_start_time: 1000, // ms after the start of the trial
           show_end_time: 1050,//出现50ms
           origin_center: true//待确定
-      },//上一组end时间减去下一组show时间就是空屏的100ms
-      {
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
           obj_type: 'text',
           startX: jsPsych.timelineVariable("test_Xpos"), // location of the cross's center in the canvas
           startY: "center",
@@ -279,27 +270,27 @@ let prac_i = {
         }
       ],
 
-  choices: ['f', 'j'],
-  response_start_time:1150,//开始作答时间，第二个刺激开始计算
-  trial_duration:2650,//结束时间，一共作答时间持续1500ms
-  data:function(){return jsPsych.timelineVariable("identify")},
-  on_finish: function(data){
-    data.correct_response = jsPsych.timelineVariable("identify", true)();
-    data.correct = data.correct_response == data.key_press;//0错1对
-    data.Image = jsPsych.timelineVariable("Image");
-    data.word = jsPsych.timelineVariable("word", true)();//加括号
-    data.target = "image"; 
-    data.test = "word";
-    data.condition = "prac_image_first"
-  }
-},
-{
-  data:{
-      screen_id: "feedback"//这里为反馈
-  },
-  type:jsPsychHtmlKeyboardResponse,
-  stimulus:function(){
-      let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
+      choices: ['f', 'j'],
+      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = "image";
+        data.test = "word";
+        data.condition = "prac_image_first"
+      }
+    },
+    {
+      data: {
+        screen_id: "feedback"//这里为反馈
+      },
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function () {
+        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
         //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
         let time = jsPsych.data.get().last(1).values()[0].rt;
         let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
@@ -315,28 +306,28 @@ let prac_i = {
             return "<span style='color:red; font-size: 70px;'>错误! </span>"
           }
         }
-  },
+      },
 
-  choices:"NO_KEYS",
-  trial_duration:300,//300ms反馈
-}
-],
+      choices: "NO_KEYS",
+      trial_duration: 300,//300ms反馈
+    }
+  ],
   timeline_variables: tb,
-  randomize_order:true,
-  repetitions:2,
-  on_finish:function(){
-      // $("body").css("cursor", "default"); //鼠标出现
+  randomize_order: true,
+  repetitions: 2,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
   }
 }
 
 
 
 let formal_i = {
-  timeline:[
-  {
-  type:jsPsychPsychophysics, 
-  stimuli:[
-      {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
           obj_type: 'cross',
           startX: "center", // location of the cross's center in the canvas
           startY: "center",
@@ -345,10 +336,10 @@ let formal_i = {
           line_color: 'white', // You can use the HTML color name instead of the HEX color.
           show_start_time: 500,
           show_end_time: 1000// ms after the start of the trial
-      }, 
-      {
-          obj_type:"image",
-          file: function(){return jsPsych.timelineVariable("Image")},
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
           startX: jsPsych.timelineVariable("target_Xpos"), // location of the cross's center in the canvas
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
@@ -356,8 +347,8 @@ let formal_i = {
           show_start_time: 1000, // ms after the start of the trial
           show_end_time: 1050,//出现50ms
           origin_center: true//待确定
-      },//上一组end时间减去下一组show时间就是空屏的100ms
-      {
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
           obj_type: 'text',
           startX: jsPsych.timelineVariable("test_Xpos"), // location of the cross's center in the canvas
           startY: "center",
@@ -373,50 +364,51 @@ let formal_i = {
         }
       ],
 
-  choices: ['f', 'j'],
-  response_start_time:1150,//开始作答时间，第二个刺激开始计算
-  trial_duration:2650,//结束时间，一共作答时间持续1500ms
-  data:function(){return jsPsych.timelineVariable("identify")},
-  on_finish: function(data){
-      data.correct_response = jsPsych.timelineVariable("identify", true)();
-      data.correct = data.correct_response == data.key_press;//0错1对
-      data.Image = jsPsych.timelineVariable("Image");
-      data.word = jsPsych.timelineVariable("word", true)();//加括号
-      data.target = "image"; 
-      data.test = "word";
-      data.target_Xpos = jsPsych.timelineVariable("target_Xpos")
-      data.test_Xpos = jsPsych.timelineVariable("test_Xpos")
-      data.condition = "prac_image_first"
-  }
-},
-],
+      choices: ['f', 'j'],
+      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = "image";
+        data.test = "word";
+        data.target_Xpos = jsPsych.timelineVariable("target_Xpos")
+        data.test_Xpos = jsPsych.timelineVariable("test_Xpos")
+        data.condition = "prac_image_first"
+      }
+    },
+  ],
   timeline_variables: tb,
-  randomize_order:true,
-  repetitions:2,
-  on_finish:function(){
-      // $("body").css("cursor", "default"); //鼠标出现
+  randomize_order: true,
+  repetitions: 2,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
   }
 }
 
 
 var feedback_p = {
-type: jsPsychHtmlKeyboardResponse,
-stimulus: function () {
-  let trials = jsPsych.data.get().filter(
-    [{ correct: true }, { correct: false }]
-  ).last(24); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
-  //这里填入timeline_variables里面的trial数量
-  let correct_trials = trials.filter({
-    correct: true
-  });
-  let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-  let rt = Math.round(correct_trials.select('rt').mean());
-  return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function () {
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(24); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+    //这里填入timeline_variables里面的trial数量
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                         <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
-    "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>";
-}
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>";
+  }
 }
 
+timeline.push(basic_information);
 timeline.push(information);
 timeline.push(Instructions1);
 timeline.push(prac_i);
