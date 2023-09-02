@@ -18,6 +18,9 @@ var key = ['f', 'j']//按键
 let acc = 60;
 let view_texts_images = [];
 
+stim_starts = [1000, 1150]// the previous is for target the last one is for test
+stim_ends = [1050, 1200]
+
 
 const images = [
   '3_Stimuli/C_ambi40.png',
@@ -29,6 +32,9 @@ const preload = {
   images: images,
 }
 timeline.push(preload);//preload图片
+
+
+
 
 
 
@@ -62,25 +68,27 @@ var Instructions1 = {
 }
 
 
+
 tb = [//restore the trials
-  { Image: images[0], word: () => texts[0], identify: () => key[0] },
-  { Image: images[1], word: () => texts[1], identify: () => key[0] },
-  { Image: images[2], word: () => texts[2], identify: () => key[0] },
+// image first
+  { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1] },
+  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1] },
+  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1] },
 
-  { Image: images[0], word: () => texts[1], identify: () => key[1] },
-  { Image: images[1], word: () => texts[2], identify: () => key[1] },
-  { Image: images[2], word: () => texts[0], identify: () => key[1] },
+  { Image: images[0], word: () => texts[1], identify: () => key[1],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  { Image: images[1], word: () => texts[2], identify: () => key[1],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  { Image: images[2], word: () => texts[0], identify: () => key[1],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
 
-  { Image: images[0], word: () => texts[2], identify: () => key[1] },
-  { Image: images[1], word: () => texts[0], identify: () => key[1] },
-  { Image: images[2], word: () => texts[1], identify: () => key[1] },
+  { Image: images[0], word: () => texts[2], identify: () => key[1],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  { Image: images[1], word: () => texts[0], identify: () => key[1],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  { Image: images[2], word: () => texts[1], identify: () => key[1],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
 
-  { Image: images[0], word: () => texts[0], identify: () => key[0] },
-  { Image: images[1], word: () => texts[1], identify: () => key[0] },
-  { Image: images[2], word: () => texts[2], identify: () => key[0] },
+  { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
 ];
 
-let prac_i = {
+let prac_trials = {
   timeline: [
     {
       type: jsPsychPsychophysics,
@@ -102,8 +110,8 @@ let prac_i = {
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
           heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: 1000, // ms after the start of the trial
-          show_end_time: 1050,//出现50ms
+          show_start_time: jsPsych.timelineVariable("target_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("target_end"),//出现50ms
           origin_center: true//待确定
         },//上一组end时间减去下一组show时间就是空屏的100ms
         {
@@ -116,8 +124,8 @@ let prac_i = {
           font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
 
           text_color: 'white',
-          show_start_time: 1150, // ms after the start of the trial
-          //show_end_time: 1200,直到反应才消失刺激
+          show_start_time: jsPsych.timelineVariable("test_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("test_end"),//直到反应才消失刺激
           origin_center: true//带确定
         }
       ],
@@ -131,9 +139,11 @@ let prac_i = {
         data.correct = data.correct_response == data.key_press;//0错1对
         data.Image = jsPsych.timelineVariable("Image");
         data.word = jsPsych.timelineVariable("word", true)();//加括号
-        data.target = "image";
-        data.test = "word";
-        data.condition = "prac_image_first"
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.target_start = jsPsych.timelineVariable("target_start");
+        data.test_start = jsPsych.timelineVariable("test_start");
+        data.exp_condition = "Practice"
       }
     },
     {
@@ -258,9 +268,11 @@ var feedback_p = {
   }
 }
 
+timeline.push(fullscreen_trial);//将全屏设置放入到时间线里
 timeline.push(basic_information);
 timeline.push(information);
 timeline.push(Instructions1);
-timeline.push(formal_i);
-timeline.push(feedback_p);
+timeline.push(prac_trials);
+//timeline.push(feedback_p);
+
 jsPsych.run(timeline);

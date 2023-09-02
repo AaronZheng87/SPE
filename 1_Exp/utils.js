@@ -120,6 +120,12 @@ var information = {
   };
 */
 
+var fullscreen_trial = {
+  type: jsPsychFullscreen,
+  fullscreen_mode: true,
+  message: "<p><span class='add_' style='color:white; font-size: 25px;'> 实验需要全屏模式，实验期间请勿退出全屏。 </span></p >",
+  button_label: " <span class='add_' style='color:black; font-size: 20px;'> 点击这里进入全屏</span>"
+}
 
 // 基本变量声明
 var timeline = [] //设置一个时间线
