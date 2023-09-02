@@ -86,6 +86,23 @@ tb = [//restore the trials
   { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
   { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
   { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Image',test: "Word", target_start: stim_starts[0], target_end: stim_ends[0], test_start: stim_starts[1], test_end: stim_ends[1]  },
+  // word first
+
+  { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+
+  { Image: images[0], word: () => texts[1], identify: () => key[1],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[1], word: () => texts[2], identify: () => key[1],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[2], word: () => texts[0], identify: () => key[1],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+
+  { Image: images[0], word: () => texts[2], identify: () => key[1],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[1], word: () => texts[0], identify: () => key[1],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[2], word: () => texts[1], identify: () => key[1],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
+  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Word',test: "Image", target_start: stim_starts[1], target_end: stim_ends[1], test_start: stim_starts[0], test_end: stim_ends[0] },
 ];
 
 let prac_trials = {
@@ -176,7 +193,7 @@ let prac_trials = {
   ],
   timeline_variables: tb,
   randomize_order: true,
-  repetitions: 2,
+  repetitions: 1,
   on_finish: function () {
     // $("body").css("cursor", "default"); //鼠标出现
   }
