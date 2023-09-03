@@ -129,3 +129,53 @@ var fullscreen_trial = {
 
 // 基本变量声明
 var timeline = [] //设置一个时间线
+
+
+var feedback_continue_practice = { //在这里呈现文字recap，让被试再记一下
+  type: jsPsychInstructions,
+  pages: function () {
+    let start = "<p class='header' style='font-size:25px; line-height:30px;'>请您努力记下如下匹配对应关系，再次进行练习。</p>",
+      middle = "<p class='footer' style='font-size:25px; line-height:30px;'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
+      end = "<p style='font-size:25px; line-height:30px;'>如果您明白了规则：</p><p style='font-size:22px; line-height:25px;'>请按 继续 进入练习</p><div>";
+    let tmpI = "";
+    view_texts_images.forEach(v => {
+      tmpI += `<p class="content" style='font-size:25px'>${v}</p>`;
+    });
+    return ["<p class='header' style='font-size:25px; line-height:30px;'>您的正确率未达到进入正式实验的要求。</p>",
+      start + `<div class="box">${tmpI}</div>` +
+      `<p class='footer' style='font-size:25px; line-height:30px;'>您的任务是判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='font-size:25px; line-height:30px;'>如果二者匹配，请按 <span style="color: lightgreen;">${key[0]} 键</span></p><p class='footer' style='font-size:25px'>如果二者不匹配，请按<span style="color: lightgreen;"> ${key[1]} 键</p></span><p class='footer' style='font-size:22px; line-height:25px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上进行按键。</p></span>`,
+      middle + end];
+  },
+  show_clickable_nav: true,
+  button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
+  button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  },
+  on_load: () => {
+    $("body").css("cursor", "default");
+  }
+}
+
+
+var feedback_goformal = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function () {
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(24);
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                          <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      "<p class='context'>恭喜您完成练习。按任意键进入正式实验。</p>" + 
+      "<p class='footer' style='font-size: 35px; line-height:40px;'>请在进入正式实验实验之前将您的<span style='color: lightgreen;'>食指</span>放在电脑键盘的相应键位上进行按键。</p>"
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  }
+}

@@ -287,11 +287,52 @@ var feedback_p = {
   }
 }
 
+
+var if_node = { //if_node 用于判断是否呈现feedback，feedback_continue_practice
+  timeline: [feedback_p, feedback_continue_practice],
+  conditional_function: function (data) {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(24);//这里注意：只需要上一组的练习数据，而不是所有的数据！！ 如何实现：.last() 取data最后的几组数据（上一组练习数据）
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//达标就skip掉feedback_continue_practice这一段
+    } else if (accuracy < acc) { //没达标反馈feedback,feedback_continue_practice
+      return true;
+    }
+  }
+}
+
+
+
+var loop_node = {
+  timeline: [prac_trials, if_node],
+  loop_function: function () {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(24);//记得改，取数据
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//end 进入正式实验前的反馈
+    } else if (accuracy < acc) { // repeat
+      return true;
+    }
+  }
+}
+
+
 timeline.push(fullscreen_trial);//将全屏设置放入到时间线里
 timeline.push(basic_information);
 timeline.push(information);
 timeline.push(Instructions1);
-timeline.push(prac_trials);
+//timeline.push(prac_trials);
 //timeline.push(feedback_p);
-
+timeline.push(loop_node);
+timeline.push(feedback_goformal)
 jsPsych.run(timeline);
