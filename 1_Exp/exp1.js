@@ -31,8 +31,8 @@ const preload = {
   type: jsPsychPreload,
   images: images,
 }
-timeline.push(preload);//preload图片
 
+timeline.push(preload);//preload图片
 
 
 
@@ -203,7 +203,7 @@ let prac_trials = {
 
 
 
-let formal_i = {
+let formal_trials = {
   timeline: [
     {
       type: jsPsychPsychophysics,
@@ -225,8 +225,8 @@ let formal_i = {
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
           heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: 1000, // ms after the start of the trial
-          show_end_time: 1050,//出现50ms
+          show_start_time: jsPsych.timelineVariable("target_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("target_end"),//出现50ms
           origin_center: true//待确定
         },//上一组end时间减去下一组show时间就是空屏的100ms
         {
@@ -239,8 +239,8 @@ let formal_i = {
           font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
 
           text_color: 'white',
-          show_start_time: 1150, // ms after the start of the trial
-          //show_end_time: 1200,直到反应才消失刺激
+          show_start_time: jsPsych.timelineVariable("test_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("test_end"),//直到反应才消失刺激
           origin_center: true//带确定
         }
       ],
@@ -254,15 +254,19 @@ let formal_i = {
         data.correct = data.correct_response == data.key_press;//0错1对
         data.Image = jsPsych.timelineVariable("Image");
         data.word = jsPsych.timelineVariable("word", true)();//加括号
-        data.target = "image";
-        data.test = "word";
-        data.condition = "prac_image_first"
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.target_start = jsPsych.timelineVariable("target_start");
+        data.test_start = jsPsych.timelineVariable("test_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Formal"
       }
     },
   ],
   timeline_variables: tb,
   randomize_order: true,
-  repetitions: 2,
+  repetitions: 1,
   on_finish: function () {
     // $("body").css("cursor", "default"); //鼠标出现
   }
@@ -283,7 +287,8 @@ var feedback_p = {
     let rt = Math.round(correct_trials.select('rt').mean());
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                         <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
-      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>";
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" + 
+      "<p> <div style = 'color: green'><按任意键至下页></div></p>";
   }
 }
 
@@ -327,12 +332,52 @@ var loop_node = {
 }
 
 
-timeline.push(fullscreen_trial);//将全屏设置放入到时间线里
+
+
+var feedback_f = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function () {
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(24); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+    //这里填入timeline_variables里面的trial数量
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                        <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>"+ 
+      "<p> <div style = 'color: green'><按任意键进入休息></div></p>";
+  }
+};
+
+
+
+var repeatblock = [
+  {
+    timeline: [formal_trials, feedback_f, rest1],
+    repetitions: 6 //6个block
+  }
+]; 
+
+
+timeline.push(welcome);
 timeline.push(basic_information);
 timeline.push(information);
+timeline.push(chinrest);
+timeline.push(fullscreen_trial);
 timeline.push(Instructions1);
-//timeline.push(prac_trials);
-//timeline.push(feedback_p);
+timeline.push(prac_trials);
+timeline.push(feedback_p);
 timeline.push(loop_node);
 timeline.push(feedback_goformal)
+timeline.push({
+  timeline: [{
+      timeline: repeatblock}]
+  });
+
+timeline.push(finish);
+      
 jsPsych.run(timeline);
