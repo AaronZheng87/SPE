@@ -318,7 +318,7 @@ var loop_node = {
   loop_function: function () {
     var trials = jsPsych.data.get().filter(
       [{ correct: true }, { correct: false }]
-    ).last(24);//记得改，取数据
+    ).last(24);
     var correct_trials = trials.filter({
       correct: true
     });
@@ -339,7 +339,7 @@ var feedback_f = {
   stimulus: function () {
     let trials = jsPsych.data.get().filter(
       [{ correct: true }, { correct: false }]
-    ).last(24); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+    ).last(120); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
     //这里填入timeline_variables里面的trial数量
     let correct_trials = trials.filter({
       correct: true
