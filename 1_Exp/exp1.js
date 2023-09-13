@@ -369,8 +369,8 @@ timeline.push(information);
 timeline.push(chinrest);
 timeline.push(fullscreen_trial);
 timeline.push(Instructions1);
-timeline.push(prac_trials);
-timeline.push(feedback_p);
+//timeline.push(prac_trials);
+//timeline.push(feedback_p);
 timeline.push(loop_node);
 timeline.push(feedback_goformal)
 timeline.push({
