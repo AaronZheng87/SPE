@@ -1,4 +1,4 @@
-preprocessing <- function(path){
+jspsycsv2df <- function(path){
   #import the data from path
   df <- read_csv(path)
   # basic information of subject
