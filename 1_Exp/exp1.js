@@ -1,26 +1,29 @@
+test_model = false
+
 const jsPsych = initJsPsych({
   /* auto_update_progress_bar: true,
    extensions: {
      type: naodao,
    }*/
   on_finish: function () {
-    jsPsych.data.get().localSave('csv', 'exp1' + info["ID"] + '.csv');
-    document.exitFullscreen(); // 退出全屏
+    if (!test_model) jsPsych.data.get().localSave('csv', 'exp1' + info["ID"] + '.csv');
+    if (!test_model) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
 });
 
-
 var texts = ["自我", "朋友", "他人"]//储存文字
 
 var key = ['f', 'j']//按键
-//正确率60%
-let acc = 60;
+//正确率70%
+const acc = 70;
 let view_texts_images = [];
 
 stim_starts = [1000, 1150]// the previous is for target the last one is for test
 stim_ends = [1050, 1200]
 
+const tb_repetitions = test_model ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
+blockTotalNum1 = test_model ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
 
 const images = [
   '3_Stimuli/C_ambi40.png',
@@ -37,9 +40,6 @@ timeline.push(preload);//preload图片
 
 
 
-
-
-
 var Instructions1 = {
   type: jsPsychInstructions,
   pages: function () {
@@ -50,7 +50,7 @@ var Instructions1 = {
     view_texts_images.forEach(v => {
       tmpI += `<p class="content">${v}</p>`;
     });
-    return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要50分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
+    return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要40分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
       start + `<div class="box">${tmpI}</div>` +
       `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`,
       `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成一组由不同的刺激呈现顺序：<span style="color: yellow; ">先呈现图形后呈现文字或先呈现文字后呈现图形</span>组成的，一组24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下6组匹配任务，每组包括120次按键反应，每组完成后会有休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约50分钟。</p>`,//实验时间待修改
@@ -70,40 +70,44 @@ var Instructions1 = {
 
 
 tb = [//restore the trials
-// image first
-  { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match"},
-  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match"},
-  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match"},
-
-  { Image: images[0], word: () => texts[1], identify: () => key[1],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch"},
-  { Image: images[1], word: () => texts[2], identify: () => key[1],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch"},
-  { Image: images[2], word: () => texts[0], identify: () => key[1],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch"},
-
-  { Image: images[0], word: () => texts[2], identify: () => key[1],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch"},
-  { Image: images[1], word: () => texts[0], identify: () => key[1],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch"},
-  { Image: images[2], word: () => texts[1], identify: () => key[1],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch"},
-
-  { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match"},
-  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match"},
-  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Image',test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match"},
-  // word first
-
-  { Image: images[0], word: () => texts[0], identify: () => key[0],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match"},
-  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match"},
-  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match"},
-
-  { Image: images[0], word: () => texts[1], identify: () => key[1],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch"},
-  { Image: images[1], word: () => texts[2], identify: () => key[1],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch"},
-  { Image: images[2], word: () => texts[0], identify: () => key[1],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch"},
-
-  { Image: images[0], word: () => texts[2], identify: () => key[1],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch"},
-  { Image: images[1], word: () => texts[0], identify: () => key[1],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch"},
-  { Image: images[2], word: () => texts[1], identify: () => key[1],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch"},
-
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match"},
-  { Image: images[1], word: () => texts[1], identify: () => key[0],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match"},
-  { Image: images[2], word: () => texts[2], identify: () => key[0],target: 'Word',test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match"},
+  // image first
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
 ];
+if (!test_model) {
+  tb.push(
+    // image first
+    { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
+    { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
+    { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
+
+    { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
+    { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
+    { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
+
+    { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
+    { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
+    { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
+
+    // word first
+    { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
+    { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
+    { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" },
+
+    { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
+    { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
+    { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
+
+    { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
+    { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
+    { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
+
+    { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
+    { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
+    { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" }
+  )
+}
 
 let prac_trials = {
   timeline: [
@@ -266,7 +270,7 @@ let formal_trials = {
   ],
   timeline_variables: tb,
   randomize_order: true,
-  repetitions: 5,
+  repetitions: tb_repetitions,
   on_finish: function () {
     // $("body").css("cursor", "default"); //鼠标出现
   }
@@ -287,9 +291,10 @@ var feedback_p = {
     let rt = Math.round(correct_trials.select('rt').mean());
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                         <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
-      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" + 
-      "<p> <div style = 'color: green'><按任意键至下页></div></p>";
-  }
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      "<p> <div style = 'color: green'><按空格键至下页></div></p>";
+  },
+  choices: ['space']
 }
 
 
@@ -348,36 +353,32 @@ var feedback_f = {
     let rt = Math.round(correct_trials.select('rt').mean());
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                         <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
-      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>"+ 
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
       "<p> <div style = 'color: green'><按任意键进入休息></div></p>";
   }
 };
 
 
 
-var repeatblock = [
-  {
-    timeline: [formal_trials, feedback_f, rest1],
-    repetitions: 6 //6个block
-  }
-]; 
+var repeatblock = {
+  timeline: [formal_trials, feedback_f, rest1],
+  repetitions: blockTotalNum1 //6个block
+};
 
-
-timeline.push(welcome);
-timeline.push(basic_information);
-timeline.push(information);
-timeline.push(chinrest);
-timeline.push(fullscreen_trial);
-timeline.push(Instructions1);
+if (!test_model) {
+  timeline.push(welcome);
+  timeline.push(basic_information);
+  timeline.push(information);
+  timeline.push(chinrest);
+  timeline.push(fullscreen_trial);
+  timeline.push(Instructions1);
+}
 //timeline.push(prac_trials);
 //timeline.push(feedback_p);
 timeline.push(loop_node);
 timeline.push(feedback_goformal)
-timeline.push({
-  timeline: [{
-      timeline: repeatblock}]
-  });
+timeline.push(repeatblock);
 
-timeline.push(finish);
-      
+if (!test_model) timeline.push(finish);
+
 jsPsych.run(timeline);

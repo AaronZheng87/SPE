@@ -108,16 +108,16 @@ var information = {
 };
 
 var welcome = {
-    type: jsPsychHtmlKeyboardResponse,
-    stimulus: `
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
      <p>您好，欢迎参加本次实验。</p>
      <p>为充分保障您的权利，请确保您已经知晓并同意《参与实验同意书》以及《数据公开知情同意书》。</p>
      <p>如果您未见过上述内容，请咨询实验员。</p>
      <p>如果您选择继续实验，则表示您已经清楚两份知情同意书的内容并同意。</p>
      <p> <div style = "color: green"><按任意键至下页></div> </p>
      `,
-    choices: "ALL_KEYS",
-  };
+  choices: "ALL_KEYS",
+};
 
 
 var chinrest = {
@@ -125,15 +125,15 @@ var chinrest = {
   blindspot_reps: 3,
   resize_units: "deg",
   pixels_per_unit: 50,
-  item_path:'3_Stimuli/card.png',
-  adjustment_prompt: function(){
+  item_path: '3_Stimuli/card.png',
+  adjustment_prompt: function () {
     let html = `<p style = "font-size: 28px">首先，我们将快速测量您的显示器上像素到厘米的转换比率。</p>`;
     html += `<p style = "font-size: 28px">请您将拿出一张真实的银行卡放在屏幕上方，单击并拖动图像的右下角，直到它与屏幕上的信用卡大小相同。</p>`;
     html += `<p style = "font-size: 28px">您可以使用与银行卡大小相同的任何卡，如会员卡或驾照，如果您无法使用真实的卡，可以使用直尺测量图像宽度至85.6毫米。</p>`;
     html += `<p style = "font-size: 28px"> 如果对以上操作感到困惑，请参考这个视频： <a href='https://www.naodao.com/public/stim_calibrate.mp4' target='_blank' style='font-size:24px'>参考视频</a></p>`;
     return html
   },
-  blindspot_prompt: function(){
+  blindspot_prompt: function () {
     return `<p style="text-align:left">现在，我们将快速测量您和屏幕之间的距离：<br>
     请把您的左手放在 空格键上<br>
     请用右手遮住右眼<br>
@@ -143,7 +143,7 @@ var chinrest = {
     <a style="text-align:center">准备开始时，请按空格键。</a></p>`
   },
   blindspot_measurements_prompt: `剩余测量次数：`,
-  on_finish: function(data){
+  on_finish: function (data) {
     console.log(data)
   },
   redo_measurement_button_label: `还不够接近，请重试`,
@@ -205,7 +205,7 @@ var feedback_goformal = {
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                           <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
       "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
-      "<p class='context'>恭喜您完成练习。按任意键进入正式实验。</p>" + 
+      "<p class='context'>恭喜您完成练习。按任意键进入正式实验。</p>" +
       "<p class='footer' style='font-size: 35px; line-height:40px;'>请在进入正式实验实验之前将您的<span style='color: lightgreen;'>食指</span>放在电脑键盘的相应键位上进行按键。</p>"
   },
   on_finish: function () {
@@ -214,21 +214,17 @@ var feedback_goformal = {
 }
 
 
-
-let blockTotalNum1 = 5;// 此处填入总block数量-1，比如总数量是3，那么值就需要是2
 let rest1 = {
-type:jsPsychHtmlButtonResponse,
-stimulus: function () {
-    let totaltrials = jsPsych.data.get().filter(
-      [{ correct: true }, { correct: false }]
-    );
-    return `
-                  <p>您当前还剩余${blockTotalNum1}组实验</p>
-                  <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
-                  <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
-  },
+  type: jsPsychHtmlButtonResponse,
+  stimulus: "",
   choices: ["结束休息"],
-  on_load: function () {
+  on_start: function (data) {
+    blockTotalNum1 -= 1;
+    if (blockTotalNum1 == 0) {
+      data.trial_duration = 5
+      data.choices = [""]
+      return
+    }
     $("body").css("cursor", "default");
     let tmpTime = setInterval(function () {
       $("#iii").text(parseInt($("#iii").text()) - 1);
@@ -238,10 +234,24 @@ stimulus: function () {
       }
     }, 1000);
     sessionStorage.setItem("tmpInter", tmpTime);
+    data.stimulus = `
+                  <p>您当前还剩余${blockTotalNum1}组实验</p>
+                  <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
+                  <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
   },
+  // on_load: function () {
+  //   $("body").css("cursor", "default");
+  //   let tmpTime = setInterval(function () {
+  //     $("#iii").text(parseInt($("#iii").text()) - 1);
+  //     if (parseInt($("#iii").text()) < 1) {
+  //       $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
+  //       clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+  //     }
+  //   }, 1000);
+  //   sessionStorage.setItem("tmpInter", tmpTime);
+  // },
   on_finish: function () {
     $("body").css("cursor", "none"); //鼠标消失
-    blockTotalNum1 -= 1;
     $(document.body).unbind();
     clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
   }
@@ -249,7 +259,7 @@ stimulus: function () {
 
 
 var finish = {
-  type:jsPsychHtmlKeyboardResponse, 
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: `
   <p>感谢您参加我们的实验，请<span style="color: yellow;">按任意键开始上传数据</span>，并通知研究者。</p>
   <p>感谢您的配合！</p>`,
