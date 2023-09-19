@@ -6,7 +6,7 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    if (!test_model) jsPsych.data.get().localSave('csv', 'exp1' + info["ID"] + '.csv');
+    if (!test_model) jsPsych.data.get().localSave('csv', 'exp2' + info["ID"] + '.csv');
     if (!test_model) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
@@ -653,17 +653,454 @@ var loop_node3 = {
 }
 
 
+let image_first = {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1000// ms after the start of the trial
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          origin_center: true//待确定
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
+          obj_type: 'text',
+          startX: "center",
+          startY: "center", //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+          },
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+      choices: ['f', 'j'],
+      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.image_start = jsPsych.timelineVariable("image_start");
+        data.word_start = jsPsych.timelineVariable("word_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Formal"
+      }
+    }
+  ],
+  timeline_variables: tb_img,
+  randomize_order: true,
+  repetitions: 5,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
+  }
+}
+
+
+word_first = {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1000// ms after the start of the trial
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          origin_center: true//待确定
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
+          obj_type: 'text',
+          startX: "center",
+          startY: "center", //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+          },
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+      choices: ['f', 'j'],
+      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.image_start = jsPsych.timelineVariable("image_start");
+        data.word_start = jsPsych.timelineVariable("word_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Formal"
+      }
+    },
+  ],
+  timeline_variables: tb_word,
+  randomize_order: true,
+  repetitions: 5,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
+  }
+}
+
+
+let same = {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1100// ms after the start of the trial
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
+          startX: "center", // location of the cross's center in the canvas
+          startY: -175,
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          origin_center: true//待确定
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
+          obj_type: 'text',
+          startX: "center",
+          startY: 175, //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+          },
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+      choices: ['f', 'j'],
+      response_start_time: 1000,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2500,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.image_start = jsPsych.timelineVariable("image_start");
+        data.word_start = jsPsych.timelineVariable("word_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Formal"
+      }
+    },
+  ],
+  timeline_variables: tb_sim,
+  randomize_order: true,
+  repetitions: 5,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
+  }
+}
+
+let feedback_block = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function () {
+    // aaaaa = 1;  筛选，必须要！！！！！！！！！！！
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(60);// last()填入一个block里的trial总数
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                          <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      "<p class='context'>请按任意键进入休息</p></div>";
+  },
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
+  }
+};
+
+
+let blockTotalNum_image = 3;
+let rest_image = {
+  type:jsPsychHtmlButtonResponse,
+  stimulus: function () {
+      let totaltrials = jsPsych.data.get().filter(
+        [{ correct: true }, { correct: false }]
+      );
+      return `
+                    <p>您当前还剩余${blockTotalNum_image}组实验</p>
+                    <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
+                    <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
+    },
+    choices: ["结束休息"],
+    on_load: function () {
+      $("body").css("cursor", "default");
+      let tmpTime = setInterval(function () {
+        $("#iii").text(parseInt($("#iii").text()) - 1);
+        if (parseInt($("#iii").text()) < 1) {
+          $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
+          clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+        }
+      }, 1000);
+      sessionStorage.setItem("tmpInter", tmpTime);
+    },
+    on_finish: function () {
+      $("body").css("cursor", "none"); //鼠标消失
+      blockTotalNum_image -= 1;
+      $(document.body).unbind();
+      clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+    }
+  }
+
+  let blockTotalNum_word = 3;// 此处填入总block数量-1，比如总数量是3，那么值就需要是2
+  let rest_word = {
+    type:jsPsychHtmlButtonResponse,
+    stimulus: function () {
+        let totaltrials = jsPsych.data.get().filter(
+          [{ correct: true }, { correct: false }]
+        );
+        return `
+                      <p>您当前还剩余${blockTotalNum_word}组实验</p>
+                      <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
+                      <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
+      },
+      choices: ["结束休息"],
+      on_load: function () {
+        $("body").css("cursor", "default");
+        let tmpTime = setInterval(function () {
+          $("#iii").text(parseInt($("#iii").text()) - 1);
+          if (parseInt($("#iii").text()) < 1) {
+            $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
+            clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+          }
+        }, 1000);
+        sessionStorage.setItem("tmpInter", tmpTime);
+      },
+      on_finish: function () {
+        $("body").css("cursor", "none"); //鼠标消失
+        blockTotalNum_word -= 1;
+        $(document.body).unbind();
+        clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+      }
+    }
+  
+
+let blockTotalNum_same = 3;
+let rest_same = {
+  type:jsPsychHtmlButtonResponse,
+  stimulus: function () {
+      let totaltrials = jsPsych.data.get().filter(
+        [{ correct: true }, { correct: false }]
+      );
+      return `
+                    <p>您当前还剩余${blockTotalNum_same}组实验</p>
+                    <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
+                    <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
+    },
+    choices: ["结束休息"],
+    on_load: function () {
+      $("body").css("cursor", "default");
+      let tmpTime = setInterval(function () {
+        $("#iii").text(parseInt($("#iii").text()) - 1);
+        if (parseInt($("#iii").text()) < 1) {
+          $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
+          clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+        }
+      }, 1000);
+      sessionStorage.setItem("tmpInter", tmpTime);
+    },
+    on_finish: function () {
+      $("body").css("cursor", "none"); //鼠标消失
+      blockTotalNum_same -= 1;
+      $(document.body).unbind();
+      clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+    }
+  }
+
+  let cong_image = {
+    type: jsPsychHtmlKeyboardResponse, 
+    stimulus: `
+    <p>恭喜您，正式实验中的呈现顺序为先图形后文字条件已经完成。</p>
+    <p> <div style = "color: green"><按任意键继续></div></p>
+    `, 
+    choices: "ALL_KEYS",
+  };
+
+  let cong_word = {
+    type: jsPsychHtmlKeyboardResponse, 
+    stimulus: `
+    <p>恭喜您，正式实验中的呈现顺序为先文字后图片条件已经完成。</p>
+    <p> <div style = "color: green"><按任意键继续></div></p>
+    `, 
+    choices: "ALL_KEYS",
+  };
+
+  let cong_same = {
+    type: jsPsychHtmlKeyboardResponse, 
+    stimulus: `
+    <p>恭喜您，正式实验中的呈现顺序为图形和文字同时呈现条件已经完成。</p>
+    <p> <div style = "color: green"><按任意键继续></div></p>
+    `, 
+    choices: "ALL_KEYS",
+  };
+
+  let p_gotoimage = {
+    type: jsPsychHtmlKeyboardResponse, 
+    stimulus: `
+    <p>请您将手指放在按键上，准备进入呈现顺序为<span style='color: yellow;'>先图形后文字条件</span>的正式匹配任务</p>
+    <p> <div style = "color: green"><按任意键进入下一阶段的匹配任务></div></p>
+    `, 
+    choices: "ALL_KEYS",
+  };
+
+  let p_gotoword = {
+    type: jsPsychHtmlKeyboardResponse, 
+    stimulus: `
+    <p>请您将手指放在按键上，准备进入呈现顺序为<span style='color: yellow;'>先文字后图形条件</span>的正式匹配任务</p>
+    <p> <div style = "color: green"><按任意键进入下一阶段的匹配任务></div></p>
+    `, 
+    choices: "ALL_KEYS",
+  };
+
+
+  let p_gotosame = {
+    type: jsPsychHtmlKeyboardResponse, 
+    stimulus: `
+    <p>请您将手指放在按键上，准备进入呈现顺序为<span style='color: yellow;'>图形和文字同时呈现条件</span>的正式匹配任务</p>
+    <p> <div style = "color: green"><按任意键进入下一阶段的匹配任务></div></p>
+    `, 
+    choices: "ALL_KEYS",
+  };
+
+  var repeatblock1 = [
+        p_gotoimage,
+        {
+            timeline: [image_first, feedback_block, rest_image],
+            repetitions: 4 //4个block
+        },
+        cong_image
+    ];
+
+    var repeatblock2 = [
+        p_gotoword,
+        {
+            timeline: [word_first, feedback_block, rest_word],
+            repetitions: 4
+        },
+        cong_word
+    ];
+
+    var repeatblock3 = [
+        p_gotosame,
+        {
+            timeline: [same, feedback_block, rest_same],
+            repetitions: 4
+        },
+        cong_same
+    ];
+
+
 timeline.push(welcome);
 timeline.push(basic_information);
 timeline.push(information);
-timeline.push(chinrest);
+//timeline.push(chinrest);
 timeline.push(fullscreen_trial);
 timeline.push(Instructions1);
-timeline.push(loop_node1)
-timeline.push(feedback_gow)
-timeline.push(loop_node2)
-timeline.push(feedback_gos)
-timeline.push(loop_node3)
-timeline.push(feedback_goformal)
+//timeline.push(loop_node1)
+//timeline.push(feedback_gow)
+//timeline.push(loop_node2)
+//timeline.push(feedback_gos)
+//timeline.push(loop_node3)
+//timeline.push(feedback_goformal)
 
+timeline.push({
+  timeline: [{
+      timeline: repeatblock1,
+      conditional_function: () => {
+          return jsPsych.timelineVariable("a", true) == 1
+      }
+  }, {
+      timeline: repeatblock2,
+      conditional_function: () => {
+          return jsPsych.timelineVariable("a", true) == 2
+      }
+  }, {
+      timeline: repeatblock3,
+      conditional_function: () => {
+          return jsPsych.timelineVariable("a", true) == 3
+      }
+  }],
+  timeline_variables: jsPsych.randomization.factorial({
+      a: jsPsych.randomization.shuffleNoRepeats(
+          jsPsych.randomization.repeat([1,2,3], 1)
+      )
+  })
+});
+
+timeline.push(finish);
 jsPsych.run(timeline);
