@@ -17,6 +17,10 @@ var texts = ["自我", "朋友", "他人"]//储存文字
 
 var key = ['f', 'j']//按键
 
+const acc = 70;
+
+let view_texts_images = [];
+
 stim_x = [1000, 1150]// the previous is for target the last one is for test
 stim_y = [1050, 1200]
 
@@ -42,38 +46,50 @@ timeline.push(preload);//preload图片
 
 
 var Instructions1 = {
-    type: jsPsychInstructions,
-    pages: function () {
-      let start = "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>",
-        middle = "<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
-        end = "<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入练习</span></p><div>";
-      let tmpI = "";
-      view_texts_images.forEach(v => {
-        tmpI += `<p class="content">${v}</p>`;
-      });
-      return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要40分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
-        start + `<div class="box">${tmpI}</div>` +
-        `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`,
-        `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成一组由不同的刺激呈现顺序：<span style="color: yellow; ">先呈现图形后呈现文字或先呈现文字后呈现图形</span>组成的，一组24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下6组匹配任务，每组包括120次按键反应，每组完成后会有休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约50分钟。</p>`,//实验时间待修改
-        middle + end];
-    },
-    show_clickable_nav: true,
-    button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
-    button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
-    on_load: () => {
-      $("body").css("cursor", "default");
-    },
-    on_finish: function () {
-      $("body").css("cursor", "none");
-    } //鼠标消失术，放在要消失鼠标的前一个事件里
-  }
+  type: jsPsychInstructions,
+  pages: function () {
+    let start = "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>",
+      middle = "<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
+      end = "<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入刺激呈现顺序为<span style='color: yellow;'>先图形后文字条件</span>的练习</span></p><div>";
+    let tmpI = "";
+    view_texts_images.forEach(v => {
+      tmpI += `<p class="content">${v}</p>`;
+    });
+    return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要50分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
+      start + `<div class="box">${tmpI}</div>` +
+      `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是在不同图形和文字呈现顺序的条件下判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`,
+      `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成三组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形以及图形和文字同时呈现</span>条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下4组匹配任务，每组包括60次按键反应，每组完成后会有休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约50分钟。</p>`,//实验时间待修改
+      middle + end];
+  },
+  show_clickable_nav: true,
+  button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
+  button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
+  on_load: () => {
+    $("body").css("cursor", "default");
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  } //鼠标消失术，放在要消失鼠标的前一个事件里
+}
 
 
 tb_sim = [//restore the trials
 // image first
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+
+{ Image: images[0], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+{ Image: images[1], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+{ Image: images[2], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+
+{ Image: images[0], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+{ Image: images[1], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+{ Image: images[2], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+
+{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
 ];
 
 
@@ -406,12 +422,248 @@ let prac_trials_sim = {
     }
   }
 
+
+
+var feedback_p = {
+  type: jsPsychHtmlKeyboardResponse,
+    stimulus: function () {
+      let trials = jsPsych.data.get().filter(
+        [{ correct: true }, { correct: false }]
+      ).last(12); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+      //这里填入timeline_variables里面的trial数量
+      let correct_trials = trials.filter({
+        correct: true
+      });
+      let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+      let rt = Math.round(correct_trials.select('rt').mean());
+      return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                            <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+        "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>"+
+        "<p> <div style = 'color: green'><按空格键至下页></div></p>";
+    }
+}
+
+
+if_node1 = { //if_node 用于判断是否呈现feedback，feedback_continue_practice
+  timeline: [feedback_p, feedback_continue_practice],
+  conditional_function: function (data) {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);//这里注意：只需要上一组的练习数据，而不是所有的数据！！ 如何实现：.last() 取data最后的几组数据（上一组练习数据）
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//达标就skip掉feedback_continue_practice这一段
+    } else if (accuracy < acc) { //没达标反馈feedback,feedback_continue_practice
+      return true;
+    }
+  }
+}
+
+var loop_node1 = {
+  timeline: [prac_trials_img, if_node1],
+  loop_function: function () {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);//记得改，取数据
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//end 进入正式实验前的反馈
+    } else if (accuracy < acc) { // repeat
+      return true;
+    }
+  }
+
+}
+
+var feedback_gow = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function () {
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                          <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      "<p class='context'>恭喜您完成这一阶段的练习。按任意键进入<span style='color: yellow;'>先文字后图形条件</span>的练习。</p></div>";
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  }
+}
+
+var feedback_continue_practice2 = { //在这里呈现文字recap，让被试再记一下
+  type: jsPsychInstructions,
+  pages: function () {
+    let start = "<p class='header' style='font-size:25px; line-height:30px;'>请您努力记下如下匹配对应关系，再次进行练习。</p>",
+      middle = "<p class='footer' style='font-size:25px; line-height:30px;'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
+      end = "<p style='font-size:25px; line-height:30px;'>如果您明白了规则：</p><p style='font-size:22px; line-height:25px;'>请按 继续 进入练习</p><div>";
+    let tmpI = "";
+    view_texts_images.forEach(v => {
+      tmpI += `<p class="content" style='font-size:25px'>${v}</p>`;
+    });
+    return ["<p class='header' style='font-size:25px; line-height:30px;'>您的正确率未达到进入下一阶段练习的要求。</p>",
+      start + `<div class="box">${tmpI}</div>` +
+      `<p class='footer' style='font-size:25px; line-height:30px;'>您的任务是判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='font-size:25px; line-height:30px;'>如果二者匹配，请按 <span style="color: lightgreen;">${key[0]} 键</span></p><p class='footer' style='font-size:25px'>如果二者不匹配，请按<span style="color: lightgreen;"> ${key[1]} 键</p></span><p class='footer' style='font-size:22px; line-height:25px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上进行按键。</p></span>`,
+      middle + end];
+  },
+  show_clickable_nav: true,
+  button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
+  button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  },
+  on_load: () => {
+    $("body").css("cursor", "default");
+  }
+}
+
+var if_node2 = { //if_node 用于判断是否呈现feedback，feedback_continue_practice
+  timeline: [feedback_p, feedback_continue_practice2],
+  conditional_function: function (data) {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);//这里注意：只需要上一组的练习数据，而不是所有的数据！！ 如何实现：.last() 取data最后的几组数据（上一组练习数据）
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//达标就skip掉feedback_continue_practice这一段
+    } else if (accuracy < acc) { //没达标反馈feedback,feedback_continue_practice
+      return true;
+    }
+  }
+}
+
+
+
+var loop_node2 = {
+  timeline: [prac_trials_word, if_node2],
+  loop_function: function () {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);//记得改，取数据
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//end 进入正式实验前的反馈
+    } else if (accuracy < acc) { // repeat
+      return true;
+    }
+  }
+}
+
+
+var feedback_gos = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: function () {
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+                          <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      "<p class='context'>恭喜您完成练习。按任意键进入<span style='color: yellow;'>图形和文字同时呈现条件</span>的练习。</p></div>";
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  }
+}
+
+
+var feedback_continue_practice3 = { //在这里呈现文字recap，让被试再记一下
+  type: jsPsychInstructions,
+  pages: function () {
+    let start = "<p class='header' style='font-size:25px; line-height:30px;'>请您努力记下如下匹配对应关系，再次进行练习。</p>",
+      middle = "<p class='footer' style='font-size:25px; line-height:30px;'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
+      end = "<p style='font-size:25px; line-height:30px;'>如果您明白了规则：</p><p style='font-size:22px; line-height:25px;'>请按 继续 进入练习</p><div>";
+    let tmpI = "";
+    view_texts_images.forEach(v => {
+      tmpI += `<p class="content" style='font-size:25px'>${v}</p>`;
+    });
+    return ["<p class='header' style='font-size:25px; line-height:30px;'>您的正确率未达到进入下一阶段练习的要求。</p>",
+      start + `<div class="box">${tmpI}</div>` +
+      `<p class='footer' style='font-size:25px; line-height:30px;'>您的任务是判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='font-size:25px; line-height:30px;'>如果二者匹配，请按 <span style="color: lightgreen;">${key[0]} 键</span></p><p class='footer' style='font-size:25px'>如果二者不匹配，请按<span style="color: lightgreen;"> ${key[1]} 键</p></span><p class='footer' style='font-size:22px; line-height:25px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上进行按键。</p></span>`,
+      middle + end];
+  },
+  show_clickable_nav: true,
+  button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
+  button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
+  on_finish: function () {
+    $("body").css("cursor", "none");
+  },
+  on_load: () => {
+    $("body").css("cursor", "default");
+  }
+}
+
+var if_node3 = { //if_node 用于判断是否呈现feedback，feedback_continue_practice
+  timeline: [feedback_p, feedback_continue_practice3],
+  conditional_function: function (data) {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);//这里注意：只需要上一组的练习数据，而不是所有的数据！！ 如何实现：.last() 取data最后的几组数据（上一组练习数据）
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//达标就skip掉feedback_continue_practice这一段
+    } else if (accuracy < acc) { //没达标反馈feedback,feedback_continue_practice
+      return true;
+    }
+  }
+}
+
+
+var loop_node3 = {
+  timeline: [prac_trials_sim, if_node3],
+  loop_function: function () {
+    var trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12);//记得改，取数据
+    var correct_trials = trials.filter({
+      correct: true
+    });
+    var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    if (accuracy >= acc) {
+      return false;//end 进入正式实验前的反馈
+    } else if (accuracy < acc) { // repeat
+      return true;
+    }
+  }
+}
+
+
 timeline.push(welcome);
 timeline.push(basic_information);
 timeline.push(information);
 timeline.push(chinrest);
 timeline.push(fullscreen_trial);
 timeline.push(Instructions1);
-timeline.push(prac_trials_img)
+timeline.push(loop_node1)
+timeline.push(feedback_gow)
+timeline.push(loop_node2)
+timeline.push(feedback_gos)
+timeline.push(loop_node3)
+timeline.push(feedback_goformal)
 
 jsPsych.run(timeline);
