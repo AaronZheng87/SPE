@@ -111,7 +111,7 @@ let block_type = [0, 1, 2]; // 0 image first; 1 word first; 2 simultaneously
             break
           case 2:
             image_start = word_start = stim_start
-            image_end = word_start = image_start + stim_duration_sim
+            image_end = word_end = image_start + stim_duration_sim
             break
         }
 
@@ -137,7 +137,7 @@ let block_type = [0, 1, 2]; // 0 image first; 1 word first; 2 simultaneously
 })();
 // console.log('tb_word', tb_word)
 // console.log('tb_word', tb_img)
-// console.log('tb_word', tb_sim)
+console.log('tb_word', tb_sim)
 
 
 let prac_trials_sim = {
@@ -145,16 +145,7 @@ let prac_trials_sim = {
     {
       type: jsPsychPsychophysics,
       stimuli: [
-        {
-          obj_type: 'cross',
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          line_length: 40,
-          line_width: 5,
-          line_color: 'white', // You can use the HTML color name instead of the HEX color.
-          show_start_time: 500,
-          show_end_time: 1100// ms after the start of the trial
-        },
+        fixation(end = 1100),
         {
           obj_type: "image",
           file: function () { return jsPsych.timelineVariable("Image") },
@@ -223,7 +214,6 @@ let prac_trials_sim = {
           }
         }
       },
-
       choices: "NO_KEYS",
       trial_duration: 300,//300ms反馈
     }
@@ -236,24 +226,12 @@ let prac_trials_sim = {
   }
 }
 
-
-
-
 let prac_trials_word = {
   timeline: [
     {
       type: jsPsychPsychophysics,
       stimuli: [
-        {
-          obj_type: 'cross',
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          line_length: 40,
-          line_width: 5,
-          line_color: 'white', // You can use the HTML color name instead of the HEX color.
-          show_start_time: 500,
-          show_end_time: 1000// ms after the start of the trial
-        },
+        fixation(),
         {
           obj_type: "image",
           file: function () { return jsPsych.timelineVariable("Image") },
@@ -340,16 +318,7 @@ let prac_trials_img = {
     {
       type: jsPsychPsychophysics,
       stimuli: [
-        {
-          obj_type: 'cross',
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          line_length: 40,
-          line_width: 5,
-          line_color: 'white', // You can use the HTML color name instead of the HEX color.
-          show_start_time: 500,
-          show_end_time: 1000// ms after the start of the trial
-        },
+        fixation(),
         {
           obj_type: "image",
           file: function () { return jsPsych.timelineVariable("Image") },
@@ -667,16 +636,7 @@ let image_first = {
     {
       type: jsPsychPsychophysics,
       stimuli: [
-        {
-          obj_type: 'cross',
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          line_length: 40,
-          line_width: 5,
-          line_color: 'white', // You can use the HTML color name instead of the HEX color.
-          show_start_time: 500,
-          show_end_time: 1000// ms after the start of the trial
-        },
+        fixation(),
         {
           obj_type: "image",
           file: function () { return jsPsych.timelineVariable("Image") },
@@ -737,16 +697,7 @@ word_first = {
     {
       type: jsPsychPsychophysics,
       stimuli: [
-        {
-          obj_type: 'cross',
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          line_length: 40,
-          line_width: 5,
-          line_color: 'white', // You can use the HTML color name instead of the HEX color.
-          show_start_time: 500,
-          show_end_time: 1000// ms after the start of the trial
-        },
+        fixation(),
         {
           obj_type: "image",
           file: function () { return jsPsych.timelineVariable("Image") },
@@ -807,21 +758,12 @@ let same = {
     {
       type: jsPsychPsychophysics,
       stimuli: [
-        {
-          obj_type: 'cross',
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          line_length: 40,
-          line_width: 5,
-          line_color: 'white', // You can use the HTML color name instead of the HEX color.
-          show_start_time: 500,
-          show_end_time: 1100// ms after the start of the trial
-        },
+        fixation(end = 1100),
         {
           obj_type: "image",
           file: function () { return jsPsych.timelineVariable("Image") },
-          startX: "center", // location of the cross's center in the canvas
-          startY: -175,
+          startX: 175, // location of the cross's center in the canvas
+          startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
           heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
           show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
@@ -830,8 +772,8 @@ let same = {
         },//上一组end时间减去下一组show时间就是空屏的100ms
         {
           obj_type: 'text',
-          startX: "center",
-          startY: 175, //图形和文字距离 与加号等距
+          startX: -175,
+          startY: "center", //图形和文字距离 与加号等距
           content: function () {
             return jsPsych.timelineVariable('word', true)();//记得后面要加括号
           },
@@ -843,7 +785,6 @@ let same = {
           origin_center: true//带确定
         }
       ],
-
       choices: ['f', 'j'],
       response_start_time: 1000,//开始作答时间，第二个刺激开始计算
       trial_duration: 2500,//结束时间，一共作答时间持续1500ms

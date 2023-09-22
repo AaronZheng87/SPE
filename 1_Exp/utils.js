@@ -266,6 +266,17 @@ var finish = {
   choices: "ALL_KEYS",
 };
 
-
+let fixation = (start = 500, end = 1000) => {
+  return {
+    obj_type: 'cross',
+    startX: "center", // location of the cross's center in the canvas
+    startY: "center",
+    line_length: 40,
+    line_width: 5,
+    line_color: 'white', // You can use the HTML color name instead of the HEX color.
+    show_start_time: start,
+    show_end_time: end// ms after the start of the trial}
+  }
+};
 
 
