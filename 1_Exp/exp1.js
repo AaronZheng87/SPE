@@ -15,8 +15,8 @@ const jsPsych = initJsPsych({
 var texts = ["自我", "朋友", "他人"]//储存文字
 
 var key = ['f', 'j']//按键
-//正确率70%
-const acc = 70;
+//正确率85%
+const acc = 85;
 let view_texts_images = [];
 
 stim_starts = [1000, 1150]// the previous is for target the last one is for test

@@ -17,7 +17,8 @@ var texts = ["自我", "朋友", "他人"]//储存文字
 
 var key = ['f', 'j']//按键
 
-const acc = 70;
+//正确率85%
+const acc = 85;
 
 let view_texts_images = [];
 
@@ -33,14 +34,14 @@ blockTotalNum1 = test_model ? 3 : 6;         // 此处填入总block数量 6, �
 
 
 const images = [
-    '3_Stimuli/C_ambi40.png',
-    '3_Stimuli/S_ambi40.png',
-    '3_Stimuli/T_ambi40.png'
-  ]
-  const preload = {
-    type: jsPsychPreload,
-    images: images,
-  }
+  '3_Stimuli/C_ambi40.png',
+  '3_Stimuli/S_ambi40.png',
+  '3_Stimuli/T_ambi40.png'
+]
+const preload = {
+  type: jsPsychPreload,
+  images: images,
+}
 
 timeline.push(preload);//preload图片
 
@@ -74,373 +75,373 @@ var Instructions1 = {
 
 
 tb_sim = [//restore the trials
-// image first
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+  // image first
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
 
-{ Image: images[0], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+  { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
 
-{ Image: images[0], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+  { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
 
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
 ];
 
 
 
 tb_word = [
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" },
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" },
 
-{ Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
-{ Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
-{ Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
+  { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
+  { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
+  { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
 
-{ Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
-{ Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
-{ Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
+  { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
+  { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
+  { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
 
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" }
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" }
 ];
 
 tb_img = [
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
-{ Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
-{ Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
-{ Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
+  { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
+  { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
+  { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
 
-{ Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
-{ Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
-{ Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
+  { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
+  { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
+  { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
 
-{ Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
-{ Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
-{ Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
+  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
+  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
+  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
 ];
 
 
 
 let prac_trials_sim = {
-    timeline: [
-      {
-        type: jsPsychPsychophysics,
-        stimuli: [
-          {
-            obj_type: 'cross',
-            startX: "center", // location of the cross's center in the canvas
-            startY: "center",
-            line_length: 40,
-            line_width: 5,
-            line_color: 'white', // You can use the HTML color name instead of the HEX color.
-            show_start_time: 500,
-            show_end_time: 1100// ms after the start of the trial
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1100// ms after the start of the trial
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
+          startX: "center", // location of the cross's center in the canvas
+          startY: -175,
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          origin_center: true//待确定
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
+          obj_type: 'text',
+          startX: "center",
+          startY: 175, //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
           },
-          {
-            obj_type: "image",
-            file: function () { return jsPsych.timelineVariable("Image") },
-            startX: "center", // location of the cross's center in the canvas
-            startY: -175,
-            width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-            heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-            show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-            show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-            origin_center: true//待确定
-          },//上一组end时间减去下一组show时间就是空屏的100ms
-          {
-            obj_type: 'text',
-            startX: "center",
-            startY: 175, //图形和文字距离 与加号等距
-            content: function () {
-              return jsPsych.timelineVariable('word', true)();//记得后面要加括号
-            },
-            font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
-  
-            text_color: 'white',
-            show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-            show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-            origin_center: true//带确定
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+      choices: ['f', 'j'],
+      response_start_time: 1000,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2500,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.image_start = jsPsych.timelineVariable("image_start");
+        data.word_start = jsPsych.timelineVariable("word_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Practice"
+      }
+    },
+    {
+      data: {
+        screen_id: "feedback"//这里为反馈
+      },
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function () {
+        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
+        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
+        let time = jsPsych.data.get().last(1).values()[0].rt;
+        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
+        if (time > 1500 || time === null) { //大于1500或为null为过慢
+          return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
+        } else if (time < 200) { //小于两百为过快反应
+          return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
+        } else {
+          if (keypress == trial_correct_response) { //如果按键 == 正确按键
+            return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
           }
-        ],
-  
-        choices: ['f', 'j'],
-        response_start_time: 1000,//开始作答时间，第二个刺激开始计算
-        trial_duration: 2500,//结束时间，一共作答时间持续1500ms
-        data: function () { return jsPsych.timelineVariable("identify") },
-        on_finish: function (data) {
-          data.correct_response = jsPsych.timelineVariable("identify", true)();
-          data.correct = data.correct_response == data.key_press;//0错1对
-          data.Image = jsPsych.timelineVariable("Image");
-          data.word = jsPsych.timelineVariable("word", true)();//加括号
-          data.target = jsPsych.timelineVariable("target");
-          data.test = jsPsych.timelineVariable("test");
-          data.image_start = jsPsych.timelineVariable("image_start");
-          data.word_start = jsPsych.timelineVariable("word_start");
-          data.Valence = jsPsych.timelineVariable("Valence", true)();
-          data.Matchness = jsPsych.timelineVariable("Matchness");
-          data.exp_condition = "Practice"
+          else {
+            return "<span style='color:red; font-size: 70px;'>错误! </span>"
+          }
         }
       },
-      {
-        data: {
-          screen_id: "feedback"//这里为反馈
-        },
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: function () {
-          let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-          //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-          let time = jsPsych.data.get().last(1).values()[0].rt;
-          let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
-          if (time > 1500 || time === null) { //大于1500或为null为过慢
-            return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
-          } else if (time < 200) { //小于两百为过快反应
-            return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
-          } else {
-            if (keypress == trial_correct_response) { //如果按键 == 正确按键
-              return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
-            }
-            else {
-              return "<span style='color:red; font-size: 70px;'>错误! </span>"
-            }
-          }
-        },
-  
-        choices: "NO_KEYS",
-        trial_duration: 300,//300ms反馈
-      }
-    ],
-    timeline_variables: tb_sim,
-    randomize_order: true,
-    repetitions: 1,
-    on_finish: function () {
-      // $("body").css("cursor", "default"); //鼠标出现
+
+      choices: "NO_KEYS",
+      trial_duration: 300,//300ms反馈
     }
+  ],
+  timeline_variables: tb_sim,
+  randomize_order: true,
+  repetitions: 1,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
   }
+}
 
 
 
 
-  let prac_trials_word = {
-    timeline: [
-      {
-        type: jsPsychPsychophysics,
-        stimuli: [
-          {
-            obj_type: 'cross',
-            startX: "center", // location of the cross's center in the canvas
-            startY: "center",
-            line_length: 40,
-            line_width: 5,
-            line_color: 'white', // You can use the HTML color name instead of the HEX color.
-            show_start_time: 500,
-            show_end_time: 1000// ms after the start of the trial
+let prac_trials_word = {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1000// ms after the start of the trial
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          origin_center: true//待确定
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
+          obj_type: 'text',
+          startX: "center",
+          startY: "center", //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
           },
-          {
-            obj_type: "image",
-            file: function () { return jsPsych.timelineVariable("Image") },
-            startX: "center", // location of the cross's center in the canvas
-            startY: "center",
-            width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-            heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-            show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-            show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-            origin_center: true//待确定
-          },//上一组end时间减去下一组show时间就是空屏的100ms
-          {
-            obj_type: 'text',
-            startX: "center",
-            startY: "center", //图形和文字距离 与加号等距
-            content: function () {
-              return jsPsych.timelineVariable('word', true)();//记得后面要加括号
-            },
-            font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
-  
-            text_color: 'white',
-            show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-            show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-            origin_center: true//带确定
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+      choices: ['f', 'j'],
+      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.image_start = jsPsych.timelineVariable("image_start");
+        data.word_start = jsPsych.timelineVariable("word_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Practice"
+      }
+    },
+    {
+      data: {
+        screen_id: "feedback"//这里为反馈
+      },
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function () {
+        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
+        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
+        let time = jsPsych.data.get().last(1).values()[0].rt;
+        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
+        if (time > 1500 || time === null) { //大于1500或为null为过慢
+          return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
+        } else if (time < 200) { //小于两百为过快反应
+          return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
+        } else {
+          if (keypress == trial_correct_response) { //如果按键 == 正确按键
+            return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
           }
-        ],
-  
-        choices: ['f', 'j'],
-        response_start_time: 1150,//开始作答时间，第二个刺激开始计算
-        trial_duration: 2650,//结束时间，一共作答时间持续1500ms
-        data: function () { return jsPsych.timelineVariable("identify") },
-        on_finish: function (data) {
-          data.correct_response = jsPsych.timelineVariable("identify", true)();
-          data.correct = data.correct_response == data.key_press;//0错1对
-          data.Image = jsPsych.timelineVariable("Image");
-          data.word = jsPsych.timelineVariable("word", true)();//加括号
-          data.target = jsPsych.timelineVariable("target");
-          data.test = jsPsych.timelineVariable("test");
-          data.image_start = jsPsych.timelineVariable("image_start");
-          data.word_start = jsPsych.timelineVariable("word_start");
-          data.Valence = jsPsych.timelineVariable("Valence", true)();
-          data.Matchness = jsPsych.timelineVariable("Matchness");
-          data.exp_condition = "Practice"
+          else {
+            return "<span style='color:red; font-size: 70px;'>错误! </span>"
+          }
         }
       },
-      {
-        data: {
-          screen_id: "feedback"//这里为反馈
-        },
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: function () {
-          let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-          //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-          let time = jsPsych.data.get().last(1).values()[0].rt;
-          let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
-          if (time > 1500 || time === null) { //大于1500或为null为过慢
-            return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
-          } else if (time < 200) { //小于两百为过快反应
-            return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
-          } else {
-            if (keypress == trial_correct_response) { //如果按键 == 正确按键
-              return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
-            }
-            else {
-              return "<span style='color:red; font-size: 70px;'>错误! </span>"
-            }
-          }
-        },
-  
-        choices: "NO_KEYS",
-        trial_duration: 300,//300ms反馈
-      }
-    ],
-    timeline_variables: tb_word,
-    randomize_order: true,
-    repetitions: 1,
-    on_finish: function () {
-      // $("body").css("cursor", "default"); //鼠标出现
+
+      choices: "NO_KEYS",
+      trial_duration: 300,//300ms反馈
     }
+  ],
+  timeline_variables: tb_word,
+  randomize_order: true,
+  repetitions: 1,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
   }
-  
-  let prac_trials_img = {
-    timeline: [
-      {
-        type: jsPsychPsychophysics,
-        stimuli: [
-          {
-            obj_type: 'cross',
-            startX: "center", // location of the cross's center in the canvas
-            startY: "center",
-            line_length: 40,
-            line_width: 5,
-            line_color: 'white', // You can use the HTML color name instead of the HEX color.
-            show_start_time: 500,
-            show_end_time: 1000// ms after the start of the trial
+}
+
+let prac_trials_img = {
+  timeline: [
+    {
+      type: jsPsychPsychophysics,
+      stimuli: [
+        {
+          obj_type: 'cross',
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          line_length: 40,
+          line_width: 5,
+          line_color: 'white', // You can use the HTML color name instead of the HEX color.
+          show_start_time: 500,
+          show_end_time: 1000// ms after the start of the trial
+        },
+        {
+          obj_type: "image",
+          file: function () { return jsPsych.timelineVariable("Image") },
+          startX: "center", // location of the cross's center in the canvas
+          startY: "center",
+          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          origin_center: true//待确定
+        },//上一组end时间减去下一组show时间就是空屏的100ms
+        {
+          obj_type: 'text',
+          startX: "center",
+          startY: "center", //图形和文字距离 与加号等距
+          content: function () {
+            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
           },
-          {
-            obj_type: "image",
-            file: function () { return jsPsych.timelineVariable("Image") },
-            startX: "center", // location of the cross's center in the canvas
-            startY: "center",
-            width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-            heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-            show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-            show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-            origin_center: true//待确定
-          },//上一组end时间减去下一组show时间就是空屏的100ms
-          {
-            obj_type: 'text',
-            startX: "center",
-            startY: "center", //图形和文字距离 与加号等距
-            content: function () {
-              return jsPsych.timelineVariable('word', true)();//记得后面要加括号
-            },
-            font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
-  
-            text_color: 'white',
-            show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-            show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-            origin_center: true//带确定
+          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+
+          text_color: 'white',
+          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
+          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          origin_center: true//带确定
+        }
+      ],
+
+      choices: ['f', 'j'],
+      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
+      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
+      data: function () { return jsPsych.timelineVariable("identify") },
+      on_finish: function (data) {
+        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct = data.correct_response == data.key_press;//0错1对
+        data.Image = jsPsych.timelineVariable("Image");
+        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.target = jsPsych.timelineVariable("target");
+        data.test = jsPsych.timelineVariable("test");
+        data.image_start = jsPsych.timelineVariable("image_start");
+        data.word_start = jsPsych.timelineVariable("word_start");
+        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Matchness = jsPsych.timelineVariable("Matchness");
+        data.exp_condition = "Practice"
+      }
+    },
+    {
+      data: {
+        screen_id: "feedback"//这里为反馈
+      },
+      type: jsPsychHtmlKeyboardResponse,
+      stimulus: function () {
+        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
+        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
+        let time = jsPsych.data.get().last(1).values()[0].rt;
+        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
+        if (time > 1500 || time === null) { //大于1500或为null为过慢
+          return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
+        } else if (time < 200) { //小于两百为过快反应
+          return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
+        } else {
+          if (keypress == trial_correct_response) { //如果按键 == 正确按键
+            return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
           }
-        ],
-  
-        choices: ['f', 'j'],
-        response_start_time: 1150,//开始作答时间，第二个刺激开始计算
-        trial_duration: 2650,//结束时间，一共作答时间持续1500ms
-        data: function () { return jsPsych.timelineVariable("identify") },
-        on_finish: function (data) {
-          data.correct_response = jsPsych.timelineVariable("identify", true)();
-          data.correct = data.correct_response == data.key_press;//0错1对
-          data.Image = jsPsych.timelineVariable("Image");
-          data.word = jsPsych.timelineVariable("word", true)();//加括号
-          data.target = jsPsych.timelineVariable("target");
-          data.test = jsPsych.timelineVariable("test");
-          data.image_start = jsPsych.timelineVariable("image_start");
-          data.word_start = jsPsych.timelineVariable("word_start");
-          data.Valence = jsPsych.timelineVariable("Valence", true)();
-          data.Matchness = jsPsych.timelineVariable("Matchness");
-          data.exp_condition = "Practice"
+          else {
+            return "<span style='color:red; font-size: 70px;'>错误! </span>"
+          }
         }
       },
-      {
-        data: {
-          screen_id: "feedback"//这里为反馈
-        },
-        type: jsPsychHtmlKeyboardResponse,
-        stimulus: function () {
-          let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-          //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-          let time = jsPsych.data.get().last(1).values()[0].rt;
-          let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
-          if (time > 1500 || time === null) { //大于1500或为null为过慢
-            return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
-          } else if (time < 200) { //小于两百为过快反应
-            return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
-          } else {
-            if (keypress == trial_correct_response) { //如果按键 == 正确按键
-              return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
-            }
-            else {
-              return "<span style='color:red; font-size: 70px;'>错误! </span>"
-            }
-          }
-        },
-  
-        choices: "NO_KEYS",
-        trial_duration: 300,//300ms反馈
-      }
-    ],
-    timeline_variables: tb_img,
-    randomize_order: true,
-    repetitions: 1,
-    on_finish: function () {
-      // $("body").css("cursor", "default"); //鼠标出现
+
+      choices: "NO_KEYS",
+      trial_duration: 300,//300ms反馈
     }
+  ],
+  timeline_variables: tb_img,
+  randomize_order: true,
+  repetitions: 1,
+  on_finish: function () {
+    // $("body").css("cursor", "default"); //鼠标出现
   }
+}
 
 
 
 var feedback_p = {
   type: jsPsychHtmlKeyboardResponse,
-    stimulus: function () {
-      let trials = jsPsych.data.get().filter(
-        [{ correct: true }, { correct: false }]
-      ).last(12); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
-      //这里填入timeline_variables里面的trial数量
-      let correct_trials = trials.filter({
-        correct: true
-      });
-      let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-      let rt = Math.round(correct_trials.select('rt').mean());
-      return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
+  stimulus: function () {
+    let trials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    ).last(12); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+    //这里填入timeline_variables里面的trial数量
+    let correct_trials = trials.filter({
+      correct: true
+    });
+    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+    let rt = Math.round(correct_trials.select('rt').mean());
+    return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                             <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
-        "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>"+
-        "<p> <div style = 'color: green'><按空格键至下页></div></p>";
-    }
+      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      "<p> <div style = 'color: green'><按空格键至下页></div></p>";
+  }
 }
 
 
@@ -887,182 +888,182 @@ let feedback_block = {
 
 let blockTotalNum_image = 3;
 let rest_image = {
-  type:jsPsychHtmlButtonResponse,
+  type: jsPsychHtmlButtonResponse,
   stimulus: function () {
-      let totaltrials = jsPsych.data.get().filter(
-        [{ correct: true }, { correct: false }]
-      );
-      return `
+    let totaltrials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    );
+    return `
                     <p>您当前还剩余${blockTotalNum_image}组实验</p>
                     <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
                     <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
-    },
-    choices: ["结束休息"],
-    on_load: function () {
-      $("body").css("cursor", "default");
-      let tmpTime = setInterval(function () {
-        $("#iii").text(parseInt($("#iii").text()) - 1);
-        if (parseInt($("#iii").text()) < 1) {
-          $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
-          clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
-        }
-      }, 1000);
-      sessionStorage.setItem("tmpInter", tmpTime);
-    },
-    on_finish: function () {
-      $("body").css("cursor", "none"); //鼠标消失
-      blockTotalNum_image -= 1;
-      $(document.body).unbind();
-      clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
-    }
+  },
+  choices: ["结束休息"],
+  on_load: function () {
+    $("body").css("cursor", "default");
+    let tmpTime = setInterval(function () {
+      $("#iii").text(parseInt($("#iii").text()) - 1);
+      if (parseInt($("#iii").text()) < 1) {
+        $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
+        clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+      }
+    }, 1000);
+    sessionStorage.setItem("tmpInter", tmpTime);
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none"); //鼠标消失
+    blockTotalNum_image -= 1;
+    $(document.body).unbind();
+    clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
   }
+}
 
-  let blockTotalNum_word = 3;// 此处填入总block数量-1，比如总数量是3，那么值就需要是2
-  let rest_word = {
-    type:jsPsychHtmlButtonResponse,
-    stimulus: function () {
-        let totaltrials = jsPsych.data.get().filter(
-          [{ correct: true }, { correct: false }]
-        );
-        return `
+let blockTotalNum_word = 3;// 此处填入总block数量-1，比如总数量是3，那么值就需要是2
+let rest_word = {
+  type: jsPsychHtmlButtonResponse,
+  stimulus: function () {
+    let totaltrials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    );
+    return `
                       <p>您当前还剩余${blockTotalNum_word}组实验</p>
                       <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
                       <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
-      },
-      choices: ["结束休息"],
-      on_load: function () {
-        $("body").css("cursor", "default");
-        let tmpTime = setInterval(function () {
-          $("#iii").text(parseInt($("#iii").text()) - 1);
-          if (parseInt($("#iii").text()) < 1) {
-            $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
-            clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
-          }
-        }, 1000);
-        sessionStorage.setItem("tmpInter", tmpTime);
-      },
-      on_finish: function () {
-        $("body").css("cursor", "none"); //鼠标消失
-        blockTotalNum_word -= 1;
-        $(document.body).unbind();
+  },
+  choices: ["结束休息"],
+  on_load: function () {
+    $("body").css("cursor", "default");
+    let tmpTime = setInterval(function () {
+      $("#iii").text(parseInt($("#iii").text()) - 1);
+      if (parseInt($("#iii").text()) < 1) {
+        $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
         clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
       }
-    }
-  
+    }, 1000);
+    sessionStorage.setItem("tmpInter", tmpTime);
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none"); //鼠标消失
+    blockTotalNum_word -= 1;
+    $(document.body).unbind();
+    clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+  }
+}
+
 
 let blockTotalNum_same = 3;
 let rest_same = {
-  type:jsPsychHtmlButtonResponse,
+  type: jsPsychHtmlButtonResponse,
   stimulus: function () {
-      let totaltrials = jsPsych.data.get().filter(
-        [{ correct: true }, { correct: false }]
-      );
-      return `
+    let totaltrials = jsPsych.data.get().filter(
+      [{ correct: true }, { correct: false }]
+    );
+    return `
                     <p>您当前还剩余${blockTotalNum_same}组实验</p>
                     <p>现在是休息时间，当您结束休息后，您可以点击 结束休息 按钮 继续</p>
                     <p>建议休息时间还剩余<span id="iii">60</span>秒</p>`
-    },
-    choices: ["结束休息"],
-    on_load: function () {
-      $("body").css("cursor", "default");
-      let tmpTime = setInterval(function () {
-        $("#iii").text(parseInt($("#iii").text()) - 1);
-        if (parseInt($("#iii").text()) < 1) {
-          $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
-          clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
-        }
-      }, 1000);
-      sessionStorage.setItem("tmpInter", tmpTime);
-    },
-    on_finish: function () {
-      $("body").css("cursor", "none"); //鼠标消失
-      blockTotalNum_same -= 1;
-      $(document.body).unbind();
-      clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
-    }
+  },
+  choices: ["结束休息"],
+  on_load: function () {
+    $("body").css("cursor", "default");
+    let tmpTime = setInterval(function () {
+      $("#iii").text(parseInt($("#iii").text()) - 1);
+      if (parseInt($("#iii").text()) < 1) {
+        $("#iii").parent().text("当前限定休息时间已到达，如果还未到达状态，请继续休息");
+        clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
+      }
+    }, 1000);
+    sessionStorage.setItem("tmpInter", tmpTime);
+  },
+  on_finish: function () {
+    $("body").css("cursor", "none"); //鼠标消失
+    blockTotalNum_same -= 1;
+    $(document.body).unbind();
+    clearInterval(parseInt(sessionStorage.getItem("tmpInter")));
   }
+}
 
-  let cong_image = {
-    type: jsPsychHtmlKeyboardResponse, 
-    stimulus: `
+let cong_image = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
     <p>恭喜您，正式实验中的呈现顺序为先图形后文字条件已经完成。</p>
     <p> <div style = "color: green"><按任意键继续></div></p>
-    `, 
-    choices: "ALL_KEYS",
-  };
+    `,
+  choices: "ALL_KEYS",
+};
 
-  let cong_word = {
-    type: jsPsychHtmlKeyboardResponse, 
-    stimulus: `
+let cong_word = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
     <p>恭喜您，正式实验中的呈现顺序为先文字后图片条件已经完成。</p>
     <p> <div style = "color: green"><按任意键继续></div></p>
-    `, 
-    choices: "ALL_KEYS",
-  };
+    `,
+  choices: "ALL_KEYS",
+};
 
-  let cong_same = {
-    type: jsPsychHtmlKeyboardResponse, 
-    stimulus: `
+let cong_same = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
     <p>恭喜您，正式实验中的呈现顺序为图形和文字同时呈现条件已经完成。</p>
     <p> <div style = "color: green"><按任意键继续></div></p>
-    `, 
-    choices: "ALL_KEYS",
-  };
+    `,
+  choices: "ALL_KEYS",
+};
 
-  let p_gotoimage = {
-    type: jsPsychHtmlKeyboardResponse, 
-    stimulus: `
+let p_gotoimage = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
     <p>请您将手指放在按键上，准备进入呈现顺序为<span style='color: yellow;'>先图形后文字条件</span>的正式匹配任务</p>
     <p> <div style = "color: green"><按任意键进入下一阶段的匹配任务></div></p>
-    `, 
-    choices: "ALL_KEYS",
-  };
+    `,
+  choices: "ALL_KEYS",
+};
 
-  let p_gotoword = {
-    type: jsPsychHtmlKeyboardResponse, 
-    stimulus: `
+let p_gotoword = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
     <p>请您将手指放在按键上，准备进入呈现顺序为<span style='color: yellow;'>先文字后图形条件</span>的正式匹配任务</p>
     <p> <div style = "color: green"><按任意键进入下一阶段的匹配任务></div></p>
-    `, 
-    choices: "ALL_KEYS",
-  };
+    `,
+  choices: "ALL_KEYS",
+};
 
 
-  let p_gotosame = {
-    type: jsPsychHtmlKeyboardResponse, 
-    stimulus: `
+let p_gotosame = {
+  type: jsPsychHtmlKeyboardResponse,
+  stimulus: `
     <p>请您将手指放在按键上，准备进入呈现顺序为<span style='color: yellow;'>图形和文字同时呈现条件</span>的正式匹配任务</p>
     <p> <div style = "color: green"><按任意键进入下一阶段的匹配任务></div></p>
-    `, 
-    choices: "ALL_KEYS",
-  };
+    `,
+  choices: "ALL_KEYS",
+};
 
-  var repeatblock1 = [
-        p_gotoimage,
-        {
-            timeline: [image_first, feedback_block, rest_image],
-            repetitions: 4 //4个block
-        },
-        cong_image
-    ];
+var repeatblock1 = [
+  p_gotoimage,
+  {
+    timeline: [image_first, feedback_block, rest_image],
+    repetitions: 4 //4个block
+  },
+  cong_image
+];
 
-    var repeatblock2 = [
-        p_gotoword,
-        {
-            timeline: [word_first, feedback_block, rest_word],
-            repetitions: 4
-        },
-        cong_word
-    ];
+var repeatblock2 = [
+  p_gotoword,
+  {
+    timeline: [word_first, feedback_block, rest_word],
+    repetitions: 4
+  },
+  cong_word
+];
 
-    var repeatblock3 = [
-        p_gotosame,
-        {
-            timeline: [same, feedback_block, rest_same],
-            repetitions: 4
-        },
-        cong_same
-    ];
+var repeatblock3 = [
+  p_gotosame,
+  {
+    timeline: [same, feedback_block, rest_same],
+    repetitions: 4
+  },
+  cong_same
+];
 
 
 timeline.push(welcome);
@@ -1080,25 +1081,25 @@ timeline.push(Instructions1);
 
 timeline.push({
   timeline: [{
-      timeline: repeatblock1,
-      conditional_function: () => {
-          return jsPsych.timelineVariable("a", true) == 1
-      }
+    timeline: repeatblock1,
+    conditional_function: () => {
+      return jsPsych.timelineVariable("a", true) == 1
+    }
   }, {
-      timeline: repeatblock2,
-      conditional_function: () => {
-          return jsPsych.timelineVariable("a", true) == 2
-      }
+    timeline: repeatblock2,
+    conditional_function: () => {
+      return jsPsych.timelineVariable("a", true) == 2
+    }
   }, {
-      timeline: repeatblock3,
-      conditional_function: () => {
-          return jsPsych.timelineVariable("a", true) == 3
-      }
+    timeline: repeatblock3,
+    conditional_function: () => {
+      return jsPsych.timelineVariable("a", true) == 3
+    }
   }],
   timeline_variables: jsPsych.randomization.factorial({
-      a: jsPsych.randomization.shuffleNoRepeats(
-          jsPsych.randomization.repeat([1,2,3], 1)
-      )
+    a: jsPsych.randomization.shuffleNoRepeats(
+      jsPsych.randomization.repeat([1, 2, 3], 1)
+    )
   })
 });
 
