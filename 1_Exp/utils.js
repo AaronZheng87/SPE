@@ -71,7 +71,7 @@ var information = {
     html: function () {
       let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["BirthYear"] : "";
       return `<p>
-      <input name="Q0" type="number" value=${data} placeholder="1900~2023" min=1900 max=2023 oninput="if(value.length>4) value=value.slice(0,4)" required />
+      <input name="Q0" type="number" value="${data}" placeholder="1900~2023" min=1900 max=2023 oninput="if(value.length>4) value=value.slice(0,4)" required />
       </p>`
     },
     button_label: '继续',
