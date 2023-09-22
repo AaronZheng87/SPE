@@ -25,9 +25,10 @@ let view_texts_images = [];
 stim_x = [1000, 1150]// the previous is for target the last one is for test
 stim_y = [1050, 1200]
 
-
-stim_starts = [1000, 1150, 1000]// the previous is for target the last one is for test, the last one is for simultaneous condition
-stim_ends = [1050, 1200, 1100]
+stim_start = 1000
+stim_duration = 50
+stim_duration_sim = 50 * 1 // TODO
+stim_SOA = 100
 
 const tb_repetitions = test_model ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
 blockTotalNum1 = test_model ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
@@ -73,63 +74,70 @@ var Instructions1 = {
   } //鼠标消失术，放在要消失鼠标的前一个事件里
 }
 
+let tb_sim = []
+let tb_word = []
+let tb_img = []
+let block_type = [0, 1, 2]; // 0 image first; 1 word first; 2 simultaneously
+// 生成 tb 刺激矩阵
+(() => {
+  texts.forEach(((text, ind_t) => {
+    images.forEach((image, ind_i) => {
+      let Matchness = ind_t == ind_i
+      let Valence = text[ind_i]
+      block_type.forEach((b) => {
 
-tb_sim = [//restore the trials
-  // image first
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+        let image_start
+        let image_end
+        let word_start
+        let word_end
+        let target
+        let test
+        switch (b) {
+          case 0:
+            target = "Image"
+            test = "Word"
+            image_start = stim_start
+            image_end = stim_start + stim_duration
+            word_start = image_end + stim_SOA
+            word_end = word_start + stim_duration
+            break
+          case 1:
+            target = "Word"
+            test = "Image"
+            image_start = stim_start
+            image_end = stim_start + stim_duration
+            word_start = image_end + stim_SOA
+            word_end = word_start + stim_duration
+            break
+          case 2:
+            image_start = word_start = stim_start
+            image_end = word_start = image_start + stim_duration_sim
+            break
+        }
 
-  { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
+        let stim_dict = { Image: image, word: () => text, identify: () => Matchness ? key[0] : key[1], target: target, test: test, image_start: image_start, image_end: image_end, word_start: word_start, word_end: word_end, Valence: () => Valence, Matchness: Matchness ? "Match" : "Mismatch" }
 
-  { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
-
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'None', test: "None", image_start: stim_starts[2], image_end: stim_ends[2], word_start: stim_starts[2], word_end: stim_ends[2], Valence: () => texts[2], Matchness: "Match" },
-];
-
-
-
-tb_word = [
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" },
-
-  { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
-  { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
-  { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
-
-  { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Mismatch" },
-  { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Mismatch" },
-  { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Mismatch" },
-
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Word', test: "Image", image_start: stim_starts[1], image_end: stim_ends[1], word_start: stim_starts[0], word_end: stim_ends[0], Valence: () => texts[2], Matchness: "Match" }
-];
-
-tb_img = [
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
-  { Image: images[0], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
-  { Image: images[1], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
-  { Image: images[2], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
-
-  { Image: images[0], word: () => texts[2], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Mismatch" },
-  { Image: images[1], word: () => texts[0], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Mismatch" },
-  { Image: images[2], word: () => texts[1], identify: () => key[1], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Mismatch" },
-
-  { Image: images[0], word: () => texts[0], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[0], Matchness: "Match" },
-  { Image: images[1], word: () => texts[1], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[1], Matchness: "Match" },
-  { Image: images[2], word: () => texts[2], identify: () => key[0], target: 'Image', test: "Word", image_start: stim_starts[0], image_end: stim_ends[0], word_start: stim_starts[1], word_end: stim_ends[1], Valence: () => texts[2], Matchness: "Match" },
-];
-
+        switch (b) {
+          case 0:
+            tb_img.push(stim_dict)
+            if (Matchness) tb_img.push(stim_dict)
+            break
+          case 1:
+            tb_word.push(stim_dict)
+            if (Matchness) tb_word.push(stim_dict)
+            break
+          case 2:
+            tb_sim.push(stim_dict)
+            if (Matchness) tb_sim.push(stim_dict)
+            break
+        }
+      })
+    })
+  }))
+})();
+// console.log('tb_word', tb_word)
+// console.log('tb_word', tb_img)
+// console.log('tb_word', tb_sim)
 
 
 let prac_trials_sim = {
