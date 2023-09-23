@@ -294,7 +294,7 @@ var feedback_p = {
       "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
       "<p> <div style = 'color: green'><按空格键至下页></div></p>";
   },
-  choices: ['space']
+  choices: [' ']
 }
 
 
