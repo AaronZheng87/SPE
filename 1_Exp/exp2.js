@@ -1,4 +1,4 @@
-test_model = false
+test_mode = false
 
 const jsPsych = initJsPsych({
   /* auto_update_progress_bar: true,
@@ -6,14 +6,14 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    if (!test_model) jsPsych.data.get().localSave('csv', 'exp2' + info["ID"] + '.csv');
-    if (!test_model) document.exitFullscreen(); // 退出全屏
+    if (!test_mode) jsPsych.data.get().localSave('csv', 'exp2' + info["ID"] + '.csv');
+    if (!test_mode) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
 });
 
 
-var texts = ["自我", "朋友", "他人"]//储存文字
+
 
 var key = ['f', 'j']//按键
 
@@ -22,29 +22,14 @@ const acc = 85;
 
 let view_texts_images = [];
 
-stim_x = [1000, 1150]// the previous is for target the last one is for test
-stim_y = [1050, 1200]
+const stim_start = 1000
+const stim_duration = test_mode ? 500 : 50
+const stim_duration_sim = test_mode ? 500 * 1 : 50 * 1 // TODO: 呈现 50 75 100？ 或者变化
+const stim_SOA = 100
+const stim_X_sim = [-175, 175]
 
-stim_start = 1000
-stim_duration = 50
-stim_duration_sim = 50 * 1 // TODO
-stim_SOA = 100
-
-const tb_repetitions = test_model ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
-blockTotalNum1 = test_model ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
-
-
-const images = [
-  '3_Stimuli/C_ambi40.png',
-  '3_Stimuli/S_ambi40.png',
-  '3_Stimuli/T_ambi40.png'
-]
-const preload = {
-  type: jsPsychPreload,
-  images: images,
-}
-
-timeline.push(preload);//preload图片
+const tb_repetitions = test_mode ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
+blockTotalNum1 = test_mode ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
 
 
 var Instructions1 = {
@@ -74,332 +59,187 @@ var Instructions1 = {
   } //鼠标消失术，放在要消失鼠标的前一个事件里
 }
 
-let tb_sim = []
-let tb_word = []
-let tb_img = []
-let block_type = [0, 1, 2]; // 0 image first; 1 word first; 2 simultaneously
+/**--------------------------------------------
+ *               定义刺激
+ *---------------------------------------------**/
+
+var texts = ["自我", "朋友", "他人"]//储存文字
+const images = [
+  '3_Stimuli/C_ambi40.png',
+  '3_Stimuli/S_ambi40.png',
+  '3_Stimuli/T_ambi40.png'
+]
+const preload = {
+  type: jsPsychPreload,
+  images: images,
+}
+timeline.push(preload);//preload图片
+
+let tmp_stim = []
+let block_type = ["image_first", "word_first", "simultaneous"]; // 0 image first; 1 word first; 2 simultaneously
 // 生成 tb 刺激矩阵
 (() => {
   texts.forEach(((text, ind_t) => {
     images.forEach((image, ind_i) => {
       let Matchness = ind_t == ind_i
-      let Valence = text[ind_i]
-      block_type.forEach((b) => {
+      let Valence = texts[ind_i]
 
-        let image_start
-        let image_end
-        let word_start
-        let word_end
-        let target
-        let test
-        switch (b) {
-          case 0:
-            target = "Image"
-            test = "Word"
-            image_start = stim_start
-            image_end = stim_start + stim_duration
-            word_start = image_end + stim_SOA
-            word_end = word_start + stim_duration
-            break
-          case 1:
-            target = "Word"
-            test = "Image"
-            image_start = stim_start
-            image_end = stim_start + stim_duration
-            word_start = image_end + stim_SOA
-            word_end = word_start + stim_duration
-            break
-          case 2:
-            image_start = word_start = stim_start
-            image_end = word_end = image_start + stim_duration_sim
-            break
-        }
+      let stim_dict = {
+        image: image,
+        word: text,
+        identify: Matchness ? key[0] : key[1],
+        valence: Valence,
+        matchness: Matchness ? "Match" : "Mismatch"
+      }
 
-        let stim_dict = { Image: image, word: () => text, identify: () => Matchness ? key[0] : key[1], target: target, test: test, image_start: image_start, image_end: image_end, word_start: word_start, word_end: word_end, Valence: () => Valence, Matchness: Matchness ? "Match" : "Mismatch" }
-
-        switch (b) {
-          case 0:
-            tb_img.push(stim_dict)
-            if (Matchness) tb_img.push(stim_dict)
-            break
-          case 1:
-            tb_word.push(stim_dict)
-            if (Matchness) tb_word.push(stim_dict)
-            break
-          case 2:
-            tb_sim.push(stim_dict)
-            if (Matchness) tb_sim.push(stim_dict)
-            break
-        }
-      })
+      tmp_stim.push(stim_dict)
+      if (Matchness) tmp_stim.push(stim_dict)
     })
   }))
 })();
+let tb_img = tmp_stim.map(v => ({ ...v, target: "Image" }))
+let tb_word = tmp_stim.map(v => ({ ...v, target: "Word" }))
+let tb_sim = [tb_img, tb_word].flat()
 // console.log('tb_word', tb_word)
 // console.log('tb_word', tb_img)
 console.log('tb_word', tb_sim)
 
+/**--------------------------------------------
+ *               定义练习
+ *---------------------------------------------**/
 
-let prac_trials_sim = {
-  timeline: [
-    {
-      type: jsPsychPsychophysics,
-      stimuli: [
-        fixation(end = 1100),
-        {
-          obj_type: "image",
-          file: function () { return jsPsych.timelineVariable("Image") },
-          startX: "center", // location of the cross's center in the canvas
-          startY: -175,
-          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-          origin_center: true//待确定
-        },//上一组end时间减去下一组show时间就是空屏的100ms
-        {
-          obj_type: 'text',
-          startX: "center",
-          startY: 175, //图形和文字距离 与加号等距
-          content: function () {
-            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
-          },
-          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+let trials_generator = (tb, block_type = 0, repetitions = 1, exp_phase = "Practice") => {
 
-          text_color: 'white',
-          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-          origin_center: true//带确定
+  let startX1
+  let startX2
+  let show_start_time1
+  let show_start_time2
+  let show_end_time1
+  let show_end_time2
+  console.log('block_type', block_type)
+
+  // 用于生成 show_start_time1 startX1等数据
+  let generate_stim_condition = () => {
+    let target = jsPsych.timelineVariable("target")
+    if (block_type == 2) {
+      show_start_time1 = show_start_time2 = stim_start
+      show_end_time1 = show_end_time2 = show_start_time1 + stim_duration_sim
+
+      if (target == "Image") {
+        startX1 = stim_X_sim[0]
+        startX2 = stim_X_sim[1]
+      } else {
+        startX1 = stim_X_sim[1]
+        startX2 = stim_X_sim[0]
+      }
+    } else {
+      startX1 = startX2 = 0
+      if (target == "Image") {
+        show_start_time1 = stim_start
+        show_end_time1 = stim_start + stim_duration
+        show_start_time2 = show_end_time1 + stim_SOA
+        show_end_time2 = show_start_time2 + stim_duration
+      }
+      else {
+        show_start_time2 = stim_start
+        show_end_time2 = stim_start + stim_duration
+        show_start_time1 = show_end_time2 + stim_SOA
+        show_end_time1 = show_start_time1 + stim_duration
+      }
+    }
+    console.log('target', target, "startX1", startX1, "show_start_time1", show_start_time1)
+  };
+  generate_stim_condition()
+  let stim_presentation = {
+    type: jsPsychPsychophysics,
+    stimuli: [
+      fixation(end = 1100),
+      // 定义图片呈现 startX1 show_start_time1 等
+      {
+        obj_type: "image",
+        file: () => jsPsych.timelineVariable("image"),
+        startX: () => startX1, // location of the cross's center in the canvas
+        startY: "center",
+        width: 190,  // 调整图片大小 视角：3.8° x 3.8°
+        heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
+        show_start_time: () => show_start_time1, // ms after the start of the trial
+        show_end_time: () => show_end_time1,//出现50ms
+        origin_center: true//待确定
+      },
+      // 定义词汇呈现 startX2 show_start_time2 等
+      {
+        obj_type: 'text',
+        startX: () => startX2,
+        startY: "center", //图形和文字距离 与加号等距
+        content: () => jsPsych.timelineVariable('word'),
+        font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+        text_color: 'white',
+        show_start_time: () => show_start_time2, // ms after the start of the trial
+        show_end_time: () => show_end_time2,//直到反应才消失刺激
+        origin_center: true//带确定
+      }
+    ],
+    choices: ['f', 'j'],
+    response_start_time: Math.max(show_end_time1, show_end_time2), //TODO:  需要再次确认记录时间的位置，特别是对于同时呈现 
+    trial_duration: 2500,//结束时间，一共作答时间持续1500ms
+    on_start: generate_stim_condition,
+    data: function () { return jsPsych.timelineVariable("identify") },
+    on_finish: function (data) {
+      data.correct_response = jsPsych.timelineVariable("identify");
+      data.correct = data.correct_response == data.key_press;//0错1对
+      data.Image = jsPsych.timelineVariable("image");
+      data.word = jsPsych.timelineVariable("word");//加括号
+      data.target = jsPsych.timelineVariable("target");
+      data.Valence = jsPsych.timelineVariable("valence");
+      data.Matchness = jsPsych.timelineVariable("matchness");
+      data.exp_phase = exp_phase
+      data.block_type = block_type
+      console.log('finishi', data.target, data.Image, data.word, data.Valence, data.Matchness)
+    }
+  }
+
+  let feedback_pac = {
+    data: {
+      screen_id: "feedback"//这里为反馈
+    },
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: function () {
+      let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
+      //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
+      let time = jsPsych.data.get().last(1).values()[0].rt;
+      let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
+      if (time > 1500 || time === null) { //大于1500或为null为过慢
+        return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
+      } else if (time < 200) { //小于两百为过快反应
+        return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
+      } else {
+        if (keypress == trial_correct_response) { //如果按键 == 正确按键
+          return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
         }
-      ],
-
-      choices: ['f', 'j'],
-      response_start_time: 1000,//开始作答时间，第二个刺激开始计算
-      trial_duration: 2500,//结束时间，一共作答时间持续1500ms
-      data: function () { return jsPsych.timelineVariable("identify") },
-      on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify", true)();
-        data.correct = data.correct_response == data.key_press;//0错1对
-        data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word", true)();//加括号
-        data.target = jsPsych.timelineVariable("target");
-        data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
-        data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence", true)();
-        data.Matchness = jsPsych.timelineVariable("Matchness");
-        data.exp_condition = "Practice"
+        else {
+          return "<span style='color:red; font-size: 70px;'>错误! </span>"
+        }
       }
     },
-    {
-      data: {
-        screen_id: "feedback"//这里为反馈
-      },
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: function () {
-        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-        let time = jsPsych.data.get().last(1).values()[0].rt;
-        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
-        if (time > 1500 || time === null) { //大于1500或为null为过慢
-          return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
-        } else if (time < 200) { //小于两百为过快反应
-          return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
-        } else {
-          if (keypress == trial_correct_response) { //如果按键 == 正确按键
-            return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
-          }
-          else {
-            return "<span style='color:red; font-size: 70px;'>错误! </span>"
-          }
-        }
-      },
-      choices: "NO_KEYS",
-      trial_duration: 300,//300ms反馈
-    }
-  ],
-  timeline_variables: tb_sim,
-  randomize_order: true,
-  repetitions: 1,
-  on_finish: function () {
-    // $("body").css("cursor", "default"); //鼠标出现
+    choices: "NO_KEYS",
+    trial_duration: 300,//300ms反馈
+  };
+  let trial_procedure = [stim_presentation]
+  if (exp_phase = "Practice") trial_procedure.push(feedback_pac)
+
+  let timeline = {
+    timeline: trial_procedure,
+    timeline_variables: tb,
+    randomize_order: true,
+    repetitions: repetitions
   }
-}
 
-let prac_trials_word = {
-  timeline: [
-    {
-      type: jsPsychPsychophysics,
-      stimuli: [
-        fixation(),
-        {
-          obj_type: "image",
-          file: function () { return jsPsych.timelineVariable("Image") },
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-          origin_center: true//待确定
-        },//上一组end时间减去下一组show时间就是空屏的100ms
-        {
-          obj_type: 'text',
-          startX: "center",
-          startY: "center", //图形和文字距离 与加号等距
-          content: function () {
-            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
-          },
-          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
+  return timeline
+};
 
-          text_color: 'white',
-          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-          origin_center: true//带确定
-        }
-      ],
-
-      choices: ['f', 'j'],
-      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
-      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
-      data: function () { return jsPsych.timelineVariable("identify") },
-      on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify", true)();
-        data.correct = data.correct_response == data.key_press;//0错1对
-        data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word", true)();//加括号
-        data.target = jsPsych.timelineVariable("target");
-        data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
-        data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence", true)();
-        data.Matchness = jsPsych.timelineVariable("Matchness");
-        data.exp_condition = "Practice"
-      }
-    },
-    {
-      data: {
-        screen_id: "feedback"//这里为反馈
-      },
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: function () {
-        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-        let time = jsPsych.data.get().last(1).values()[0].rt;
-        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
-        if (time > 1500 || time === null) { //大于1500或为null为过慢
-          return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
-        } else if (time < 200) { //小于两百为过快反应
-          return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
-        } else {
-          if (keypress == trial_correct_response) { //如果按键 == 正确按键
-            return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
-          }
-          else {
-            return "<span style='color:red; font-size: 70px;'>错误! </span>"
-          }
-        }
-      },
-
-      choices: "NO_KEYS",
-      trial_duration: 300,//300ms反馈
-    }
-  ],
-  timeline_variables: tb_word,
-  randomize_order: true,
-  repetitions: 1,
-  on_finish: function () {
-    // $("body").css("cursor", "default"); //鼠标出现
-  }
-}
-
-let prac_trials_img = {
-  timeline: [
-    {
-      type: jsPsychPsychophysics,
-      stimuli: [
-        fixation(),
-        {
-          obj_type: "image",
-          file: function () { return jsPsych.timelineVariable("Image") },
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-          origin_center: true//待确定
-        },//上一组end时间减去下一组show时间就是空屏的100ms
-        {
-          obj_type: 'text',
-          startX: "center",
-          startY: "center", //图形和文字距离 与加号等距
-          content: function () {
-            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
-          },
-          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
-
-          text_color: 'white',
-          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-          origin_center: true//带确定
-        }
-      ],
-
-      choices: ['f', 'j'],
-      response_start_time: 1150,//开始作答时间，第二个刺激开始计算
-      trial_duration: 2650,//结束时间，一共作答时间持续1500ms
-      data: function () { return jsPsych.timelineVariable("identify") },
-      on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify", true)();
-        data.correct = data.correct_response == data.key_press;//0错1对
-        data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word", true)();//加括号
-        data.target = jsPsych.timelineVariable("target");
-        data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
-        data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence", true)();
-        data.Matchness = jsPsych.timelineVariable("Matchness");
-        data.exp_condition = "Practice"
-      }
-    },
-    {
-      data: {
-        screen_id: "feedback"//这里为反馈
-      },
-      type: jsPsychHtmlKeyboardResponse,
-      stimulus: function () {
-        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-        let time = jsPsych.data.get().last(1).values()[0].rt;
-        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
-        if (time > 1500 || time === null) { //大于1500或为null为过慢
-          return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
-        } else if (time < 200) { //小于两百为过快反应
-          return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
-        } else {
-          if (keypress == trial_correct_response) { //如果按键 == 正确按键
-            return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
-          }
-          else {
-            return "<span style='color:red; font-size: 70px;'>错误! </span>"
-          }
-        }
-      },
-
-      choices: "NO_KEYS",
-      trial_duration: 300,//300ms反馈
-    }
-  ],
-  timeline_variables: tb_img,
-  randomize_order: true,
-  repetitions: 1,
-  on_finish: function () {
-    // $("body").css("cursor", "default"); //鼠标出现
-  }
-}
-
+let prac_trials_sim = trials_generator(tb_sim, block_type = 2)
+let prac_trials_word = trials_generator(tb_word, block_type = 1)
+let prac_trials_img = trials_generator(tb_img, block_type = 0)
 
 
 var feedback_p = {
@@ -611,6 +451,10 @@ var if_node3 = { //if_node 用于判断是否呈现feedback，feedback_continue_
   }
 }
 
+/**--------------------------------------------
+ *               定义正式实验
+ *---------------------------------------------**/
+
 
 var loop_node3 = {
   timeline: [prac_trials_sim, if_node3],
@@ -644,8 +488,8 @@ let image_first = {
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
           heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          show_start_time: 1000, // ms after the start of the trial
+          show_end_time: 1100,//出现50ms
           origin_center: true//待确定
         },//上一组end时间减去下一组show时间就是空屏的100ms
         {
@@ -653,13 +497,13 @@ let image_first = {
           startX: "center",
           startY: "center", //图形和文字距离 与加号等距
           content: function () {
-            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+            return jsPsych.timelineVariable('word');
           },
           font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
 
           text_color: 'white',
-          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          show_start_time: 1000, // ms after the start of the trial
+          show_end_time: 1100,//直到反应才消失刺激
           origin_center: true//带确定
         }
       ],
@@ -669,15 +513,15 @@ let image_first = {
       trial_duration: 2650,//结束时间，一共作答时间持续1500ms
       data: function () { return jsPsych.timelineVariable("identify") },
       on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct_response = jsPsych.timelineVariable("identify");
         data.correct = data.correct_response == data.key_press;//0错1对
         data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.word = jsPsych.timelineVariable("word");//加括号
         data.target = jsPsych.timelineVariable("target");
         data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
+        data.image_start = 1000;
         data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Valence = jsPsych.timelineVariable("Valence");
         data.Matchness = jsPsych.timelineVariable("Matchness");
         data.exp_condition = "Formal"
       }
@@ -705,8 +549,8 @@ word_first = {
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
           heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          show_start_time: 1000, // ms after the start of the trial
+          show_end_time: 1100,//出现50ms
           origin_center: true//待确定
         },//上一组end时间减去下一组show时间就是空屏的100ms
         {
@@ -714,13 +558,13 @@ word_first = {
           startX: "center",
           startY: "center", //图形和文字距离 与加号等距
           content: function () {
-            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+            return jsPsych.timelineVariable('word');
           },
           font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
 
           text_color: 'white',
           show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          show_end_time: 1100,//直到反应才消失刺激
           origin_center: true//带确定
         }
       ],
@@ -730,15 +574,15 @@ word_first = {
       trial_duration: 2650,//结束时间，一共作答时间持续1500ms
       data: function () { return jsPsych.timelineVariable("identify") },
       on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct_response = jsPsych.timelineVariable("identify");
         data.correct = data.correct_response == data.key_press;//0错1对
         data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.word = jsPsych.timelineVariable("word");//加括号
         data.target = jsPsych.timelineVariable("target");
         data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
+        data.image_start = 1000;
         data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Valence = jsPsych.timelineVariable("Valence");
         data.Matchness = jsPsych.timelineVariable("Matchness");
         data.exp_condition = "Formal"
       }
@@ -766,8 +610,8 @@ let same = {
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
           heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
+          show_start_time: 1000, // ms after the start of the trial
+          show_end_time: 1100,//出现50ms
           origin_center: true//待确定
         },//上一组end时间减去下一组show时间就是空屏的100ms
         {
@@ -775,13 +619,13 @@ let same = {
           startX: -175,
           startY: "center", //图形和文字距离 与加号等距
           content: function () {
-            return jsPsych.timelineVariable('word', true)();//记得后面要加括号
+            return jsPsych.timelineVariable('word');
           },
           font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
 
           text_color: 'white',
           show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
+          show_end_time: 1100,//直到反应才消失刺激
           origin_center: true//带确定
         }
       ],
@@ -790,15 +634,15 @@ let same = {
       trial_duration: 2500,//结束时间，一共作答时间持续1500ms
       data: function () { return jsPsych.timelineVariable("identify") },
       on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify", true)();
+        data.correct_response = jsPsych.timelineVariable("identify");
         data.correct = data.correct_response == data.key_press;//0错1对
         data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word", true)();//加括号
+        data.word = jsPsych.timelineVariable("word");//加括号
         data.target = jsPsych.timelineVariable("target");
         data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
+        data.image_start = 1000;
         data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence", true)();
+        data.Valence = jsPsych.timelineVariable("Valence");
         data.Matchness = jsPsych.timelineVariable("Matchness");
         data.exp_condition = "Formal"
       }
@@ -1015,17 +859,17 @@ var repeatblock3 = [
 ];
 
 
-timeline.push(welcome);
-timeline.push(basic_information);
+// timeline.push(welcome);
+// timeline.push(basic_information);
 timeline.push(information);
 //timeline.push(chinrest);
-timeline.push(fullscreen_trial);
-timeline.push(Instructions1);
+// timeline.push(fullscreen_trial);
+// timeline.push(Instructions1);
 //timeline.push(loop_node1)
 //timeline.push(feedback_gow)
 //timeline.push(loop_node2)
 //timeline.push(feedback_gos)
-//timeline.push(loop_node3)
+timeline.push(loop_node3)
 //timeline.push(feedback_goformal)
 
 timeline.push({
