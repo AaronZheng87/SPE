@@ -17,8 +17,6 @@ var key = ['f', 'j']//按键
 //练习阶段需要达到的正确率 85%
 const prac_acc_thres = test_mode ? 0 : 85;
 
-let view_texts_images = [];
-
 const stim_start = 1000
 const stim_duration = 50
 const stim_duration_sim = 50 * 1 // TODO: 呈现 50 75 100？ 或者变化
@@ -27,34 +25,6 @@ const stim_X_sim = [-175, 175]
 
 const repetition_stim = test_mode ? 1 : 3;   // 此处填入试次的重复次数 5, 测试为 1
 const repetition_block = test_mode ? 2 : 4;  // 此处填入总block数量 6, 测试为 3
-
-
-var Instructions1 = {
-  type: jsPsychInstructions,
-  pages: function () {
-    let start = "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>",
-      middle = "<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
-      end = "<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入刺激呈现顺序为<span style='color: yellow;'>先图形后文字条件</span>的练习</span></p><div>";
-    let tmpI = "";
-    view_texts_images.forEach(v => {
-      tmpI += `<p class="content">${v}</p>`;
-    });
-    return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要50分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
-      start + `<div class="box">${tmpI}</div>` +
-      `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是在不同图形和文字呈现顺序的条件下判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`,
-      `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成三组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形以及图形和文字同时呈现</span>条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下4组匹配任务，每组包括60次按键反应，每组完成后会有休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约50分钟。</p>`,//实验时间待修改
-      middle + end];
-  },
-  show_clickable_nav: true,
-  button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
-  button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
-  on_load: () => {
-    $("body").css("cursor", "default");
-  },
-  on_finish: function () {
-    $("body").css("cursor", "none");
-  } //鼠标消失术，放在要消失鼠标的前一个事件里
-}
 
 /**--------------------------------------------
  *               定义刺激
@@ -75,7 +45,7 @@ timeline.push(preload);//preload图片
 let tmp_stim = []
 let block_type = ["先图形后文字", "先文字后图形", "图形和文字同时呈现"]; // 0 image first; 1 word first; 2 simultaneously
 // 生成 tb 刺激矩阵， 12个刺激为一组
-(() => {
+let stim_matrix_generator = () => {
   texts.forEach(((text, ind_t) => {
     images.forEach((image, ind_i) => {
       let Matchness = ind_t == ind_i
@@ -93,12 +63,19 @@ let block_type = ["先图形后文字", "先文字后图形", "图形和文字�
       if (Matchness) tmp_stim.push(stim_dict)
     })
   }))
-})();
+};
+// 对刺激顺序进行随机
+shuffle_stim()
 // 生成不同 block 的刺激矩阵，24个为一组。 原因在于平衡同时呈现时的 target的左右问题。
+stim_matrix_generator()
 let tb_img = tmp_stim.map(v => ({ ...v, target: "Image" }))
 let tb_word = tmp_stim.map(v => ({ ...v, target: "Word" }))
 let tb_sim = [tb_img, tb_word].flat()
-// console.log('tb_word', tb_word)
+console.log('tb_sim', tb_sim)
+
+/**----------------------
+ *!    指导需要平衡按键。因此根据 info["iD"] 修改全局变量，key，images，texts。 并生成刺激矩阵 tb
+ *------------------------**/
 
 /**--------------------------------------------
  *               定义练习
@@ -308,7 +285,7 @@ let prac_session_generator = (repetitions = 1) => {
 
   let block_id = [0, 1, 2]
   block_id = jsPsych.randomization.shuffleNoRepeats(block_id)
-  console.log('block_id', block_id)
+  console.log('prac_block_id', block_id)
 
 
   let feedback_gow_generator = (block_type_i, tb_tmp, repetitions) => {
@@ -372,7 +349,7 @@ let formal_session_generator = (repetition_stim = 3, repetition_block = 4) => {
 
   let block_id = [0, 1, 2]
   block_id = jsPsych.randomization.shuffleNoRepeats(block_id)
-  console.log('block_id', block_id)
+  console.log('formal_block_id', block_id)
 
   let p_gotonext = (block_type_i) => {
     return {
@@ -469,8 +446,8 @@ if (!test_mode) {
   timeline.push(information);
   timeline.push(chinrest);
   timeline.push(fullscreen_trial);
-  timeline.push(Instructions1);
 }
+timeline.push(Instructions1_generator());
 timeline.push(prac_session_generator())
 timeline.push(formal_session_generator(repetition_stim, repetition_block))
 

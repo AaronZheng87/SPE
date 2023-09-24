@@ -15,7 +15,6 @@ const jsPsych = initJsPsych({
 var key = ['f', 'j']//按键
 //正确率85%
 const prac_acc_thres = 85;
-let view_texts_images = [];
 
 const stim_starts = [1000, 1150]// the previous is for target the last one is for test
 const stim_ends = [1050, 1200]
@@ -40,35 +39,8 @@ const preload = {
 };
 timeline.push(preload);//preload图片
 
-var Instructions1 = {
-  type: jsPsychInstructions,
-  pages: function () {
-    let start = "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>",
-      middle = "<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
-      end = "<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入练习</span></p><div>";
-    let tmpI = "";
-    view_texts_images.forEach(v => {
-      tmpI += `<p class="content">${v}</p>`;
-    });
-    return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要40分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
-      start + `<div class="box">${tmpI}</div>` +
-      `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`,
-      `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成一组由不同的刺激呈现顺序：<span style="color: yellow; ">先呈现图形后呈现文字或先呈现文字后呈现图形</span>组成的，一组24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下6组匹配任务，每组包括120次按键反应，每组完成后会有休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约50分钟。</p>`,//实验时间待修改
-      middle + end];
-  },
-  show_clickable_nav: true,
-  button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
-  button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
-  on_load: () => {
-    $("body").css("cursor", "default");
-  },
-  on_finish: function () {
-    $("body").css("cursor", "none");
-  } //鼠标消失术，放在要消失鼠标的前一个事件里
-};
-
 let tb = [];
-(() => {
+let stim_matrix_generator = () => {
   target_list.forEach((tar) => {
     texts.forEach(((text, ind_t) => {
       images.forEach((image, ind_i) => {
@@ -94,8 +66,11 @@ let tb = [];
       })
     }))
   })
-})();
-// console.log('tb', tb)
+};
+// 对刺激顺序进行随机
+shuffle_stim()
+// 生成不同 block 的刺激矩阵，24个为一组。 原因在于平衡同时呈现时的 target的左右问题。
+stim_matrix_generator()
 
 /**--------------------------------------------
  *               定义练习阶段
@@ -239,7 +214,6 @@ var loop_node = {
   }
 };
 
-
 /**--------------------------------------------
  *               定义正式实验
  *---------------------------------------------**/
@@ -334,8 +308,8 @@ if (!test_model) {
   timeline.push(information);
   timeline.push(chinrest);
   timeline.push(fullscreen_trial);
-  timeline.push(Instructions1);
 }
+timeline.push(Instructions1_generator());
 //timeline.push(prac_trials);
 //timeline.push(feedback_p);
 timeline.push(loop_node);

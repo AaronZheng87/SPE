@@ -22,67 +22,63 @@ var basic_information = {
 };
 
 var info = []
-
 /* basic data collection jsPsychInstructions trial 被试基本信息收集 */
 var information = {
-  timeline: [{
-    // 实验被试信息收集
-    type: jsPsychCallFunction, //探测被试显示器数据
-    func: function () {
-      if ($(window).outerHeight() < 500) {
-        alert("您设备不支持实验，请进入全屏模式。若已进入全屏，请换一台高分辨率的设备，谢谢。");
-        window.location = "";
+  // 实验被试信息收集
+  timeline: [
+    //探测被试显示器数据
+    {
+      type: jsPsychCallFunction,
+      func: function () {
+        if ($(window).outerHeight() < 500) {
+          alert("您设备不支持实验，请进入全屏模式。若已进入全屏，请换一台高分辨率的设备，谢谢。");
+          window.location = "";
+        }
       }
-    }
-  }, {
-    type: jsPsychSurveyHtmlForm,
-    preamble: "<p style =' color : white'>您的实验编号是</p>",
-    html: function () {
-      let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Name"] : "";
-      return "<p><input name='Q0' type='text' value='" + data + "' required/></p>";
     },
-    button_label: "继续",
-    on_finish: function (data) {
-      info["ID"] = data.response.Q0;
-      word = permutation(texts, 3) //对应的文字
-      texts = word[parseInt(info["ID"]) % 6] //被试id除以6，求余数
-      key = permutation(key, 2)[parseInt(info["ID"]) % 2] //对应的按键
-
-      view_texts_images = [] //指导语中呈现的图片和文字对应关系
-      jsPsych.randomization.shuffle(images).forEach((v, i) => { //将image随机
-        view_texts_images.push(`<img src="${v}" width=150 style="vertical-align:middle">---${texts[images.indexOf(v)]}`); //image编号和文字对应
-      })
-      console.log(`match : ${key[0]}; \nmismatch : ${key[1]};`)
-      console.log(images);
-      console.log(texts);
-    }
-
-  }
-    , {
-    type: jsPsychHtmlButtonResponse,
-    stimulus: "<p style = 'color : white'>您的性别</p>",
-    choices: ['男', '女', '其他'],
-    on_finish: function (data) {
-      info["Sex"] = data.response == 0 ? "Male" : (data.response == 1 ? "Female" : "Other")
-    }
-  }, {
-    type: jsPsychSurveyHtmlForm,
-    preamble: "<p style = 'color : white'>您的出生年</p>",
-    html: function () {
-      let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["BirthYear"] : "";
-      return `<p>
+    // 记录实验编号
+    {
+      type: jsPsychSurveyHtmlForm,
+      preamble: "<p style =' color : white'>您的实验编号是</p>",
+      html: function () {
+        let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Name"] : "";
+        return "<p><input name='Q0' type='text' value='" + data + "' required/></p>";
+      },
+      button_label: "继续",
+      on_finish: function (data) {
+        info["ID"] = data.response.Q0;
+      }
+    },
+    // 记录性别
+    {
+      type: jsPsychHtmlButtonResponse,
+      stimulus: "<p style = 'color : white'>您的性别</p>",
+      choices: ['男', '女', '其他'],
+      on_finish: function (data) {
+        info["Sex"] = data.response == 0 ? "Male" : (data.response == 1 ? "Female" : "Other")
+      }
+    },
+    // 记录年龄
+    {
+      type: jsPsychSurveyHtmlForm,
+      preamble: "<p style = 'color : white'>您的出生年</p>",
+      html: function () {
+        let data = localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["BirthYear"] : "";
+        return `<p>
       <input name="Q0" type="number" value="${data}" placeholder="1900~2023" min=1900 max=2023 oninput="if(value.length>4) value=value.slice(0,4)" required />
       </p>`
+      },
+      button_label: '继续',
+      on_finish: function (data) {
+        info["BirthYear"] = data.response.Q0;
+      }
     },
-    button_label: '继续',
-    on_finish: function (data) {
-      info["BirthYear"] = data.response.Q0;
-    }
-  }, {
-    type: jsPsychSurveyHtmlForm,
-    preamble: "<p style = 'color : white'>您的教育经历是</p>",
-    html: function () {
-      return `
+    // 教育经历
+    {
+      type: jsPsychSurveyHtmlForm,
+      preamble: "<p style = 'color : white'>您的教育经历是</p>",
+      html: function () {
+        return `
               <p><select name="Q0" size=10>
               <option value=1>小学以下</option>
               <option value=2>小学</option>
@@ -93,18 +89,40 @@ var information = {
               <option value=7>博士</option>
               <option value=8>其他</option>
               </select></p>`
-    },
-    on_load: function () {
-      $("option[value=" + (["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"].indexOf(localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Education"] : "") + 1) + "]").attr("selected", true);
-    },
-    button_label: '继续',
-    on_finish: function (data) {
-      let edu = ["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"];
-
-      info["Education"] = edu[parseInt(data.response.Q0) - 1];
+      },
+      on_load: function () {
+        $("option[value=" + (["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"].indexOf(localStorage.getItem(info["subj_idx"]) ? JSON.parse(localStorage.getItem(info["subj_idx"]))["Education"] : "") + 1) + "]").attr("selected", true);
+      },
+      button_label: '继续',
+      on_finish: function (data) {
+        let edu = ["below primary school", "primary school", "junior middle school", "high school", "university", "master", "doctor", "other"];
+        info["Education"] = edu[parseInt(data.response.Q0) - 1];
+      }
     }
-  }
   ]
+};
+// 根据被试编号，打乱实验数据
+var view_texts_images = [];
+var shuffle_stim = function () {
+  let subj_id = info["ID"] ? info["ID"] : Math.random().toFixed(4) * 10000;
+  word = permutation(texts, 3) //对应的文字
+  texts = word[parseInt(subj_id) % 6] //被试id除以6，求余数
+  key = permutation(key, 2)[parseInt(subj_id) % 2] //对应的按键
+
+  //指导语中呈现的图片和文字对应关系
+  jsPsych.randomization.shuffle(images).forEach((v, i) => { //将image随机
+    view_texts_images.push(`<img src="${v}" width=150 style="vertical-align:middle">---${texts[images.indexOf(v)]}`); //image编号和文字对应
+  })
+  console.log(
+    `
+    /**----------------------
+     *    注意：已经修改全局变量，key，images，texts, view_texts_images
+     *------------------------**/
+    `
+  );
+  console.log(`match : ${key[0]}; \nmismatch : ${key[1]};`)
+  console.log(images);
+  console.log(texts);
 };
 
 var welcome = {
@@ -118,7 +136,6 @@ var welcome = {
      `,
   choices: "ALL_KEYS",
 };
-
 
 var chinrest = {
   type: jsPsychVirtualChinrest,
@@ -159,6 +176,36 @@ var fullscreen_trial = {
   message: "<p><span class='add_' style='color:white; font-size: 25px;'> 实验需要全屏模式，实验期间请勿退出全屏。 </span></p >",
   button_label: " <span class='add_' style='color:black; font-size: 20px;'> 点击这里进入全屏</span>"
 }
+
+var Instructions1_generator = () => {
+  return {
+    type: jsPsychInstructions,
+    pages: function () {
+      let start = "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>",
+        middle = "<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>",
+        end = "<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入刺激呈现顺序为<span style='color: yellow;'>先图形后文字条件</span>的练习</span></p><div>";
+      let tmpI = "";
+
+      view_texts_images.forEach(v => {
+        tmpI += `<p class="content">${v}</p>`;
+      });
+      return ["<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要50分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>",
+        start + `<div class="box">${tmpI}</div>` +
+        `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是在不同图形和文字呈现顺序的条件下判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`,
+        `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成三组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形以及图形和文字同时呈现</span>条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下4组匹配任务，每组包括60次按键反应，每组完成后会有休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约50分钟。</p>`,//实验时间待修改
+        middle + end];
+    },
+    show_clickable_nav: true,
+    button_label_previous: " <span class='add_' style='color:black; font-size: 20px;'> 返回</span>",
+    button_label_next: " <span class='add_' style='color:black; font-size: 20px;'> 继续</span>",
+    on_load: () => {
+      $("body").css("cursor", "default");
+    },
+    on_finish: function () {
+      $("body").css("cursor", "none");
+    } //鼠标消失术，放在要消失鼠标的前一个事件里
+  }
+};
 
 // 基本变量声明
 var timeline = [] //设置一个时间线
