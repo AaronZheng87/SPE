@@ -181,8 +181,10 @@ let block_generator = (tb, block_id = 0, repetitions = 1, exp_phase = "Practice"
       }
     ],
     choices: ['f', 'j'],
-    response_start_time: Math.max(show_end_time1, show_end_time2), //TODO:  需要再次确认记录时间的位置，特别是对于同时呈现 
-    trial_duration: 2500,//结束时间，一共作答时间持续1500ms
+    //TODO:  需要再次确认记录时间的位置，特别是对于同时呈现 
+    response_start_time: () => Math.max(show_end_time1, show_end_time2),
+    //结束时间，一共作答时间持续1500ms
+    trial_duration: () => Math.max(show_end_time1, show_end_time2) + 1500,
     on_start: generate_stim_condition,
     data: function () { return jsPsych.timelineVariable("identify") },
     on_finish: function (data) {
