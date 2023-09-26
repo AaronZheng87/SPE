@@ -71,7 +71,11 @@ stim_matrix_generator()
 let tb_img = tmp_stim.map(v => ({ ...v, target: "Image" }))
 let tb_word = tmp_stim.map(v => ({ ...v, target: "Word" }))
 let tb_sim = [tb_img, tb_word].flat()
-console.log('tb_sim', tb_sim)
+tb_img = [...tb_img, ...tb_img]
+tb_word = [...tb_word, ...tb_word]
+// console.log('tb_sim', tb_sim)
+// console.log('tb_word', tb_word)
+let tb = [tb_img, tb_word, tb_sim]
 
 /**----------------------
  *!    指导需要平衡按键。因此根据 info["iD"] 修改全局变量，key，images，texts。 并生成刺激矩阵 tb
@@ -81,49 +85,49 @@ console.log('tb_sim', tb_sim)
  *               定义练习
  *---------------------------------------------**/
 
-let block_generator = (tb, block_id = 0, repetitions = 1, exp_phase = "Practice") => {
+let block_generator = (block_id = 0, repetitions = 1, exp_phase = "Practice") => {
 
-  let startX1
-  let startX2
   let show_start_time1
   let show_start_time2
   let show_end_time1
   let show_end_time2
-  console.log('block_id', block_id)
+  // console.log('block_id', block_id)
 
-  // 用于生成 show_start_time1 startX1等数据
-  let generate_stim_condition = () => {
-    let target = jsPsych.timelineVariable("target")
+  if (block_id == 2) {
+    show_start_time1 = show_start_time2 = stim_start
+    show_end_time1 = show_end_time2 = show_start_time1 + stim_duration_sim
+  }
+  else if (block_id == 0) {
+    show_start_time1 = stim_start
+    show_end_time1 = stim_start + stim_duration
+    show_start_time2 = show_end_time1 + stim_SOA
+    show_end_time2 = show_start_time2 + stim_duration
+  }
+  else if (block_id == 1) {
+    show_start_time2 = stim_start
+    show_end_time2 = stim_start + stim_duration
+    show_start_time1 = show_end_time2 + stim_SOA
+    show_end_time1 = show_start_time1 + stim_duration
+  }
+  let tb_tmp2 = tb[block_id]
+  // console.log(block_id, "tb_tmp2 -----", tb_tmp2)
+  let tb_tmp = tb_tmp2.map((tb_i) => {
+    let target = tb_i.target
+    let startX1
+    let startX2
     if (block_id == 2) {
-      show_start_time1 = show_start_time2 = stim_start
-      show_end_time1 = show_end_time2 = show_start_time1 + stim_duration_sim
-
-      if (target == "Image") {
-        startX1 = stim_X_sim[0]
-        startX2 = stim_X_sim[1]
-      } else {
-        startX1 = stim_X_sim[1]
-        startX2 = stim_X_sim[0]
-      }
-    } else {
-      startX1 = startX2 = 0
-      if (target == "Image") {
-        show_start_time1 = stim_start
-        show_end_time1 = stim_start + stim_duration
-        show_start_time2 = show_end_time1 + stim_SOA
-        show_end_time2 = show_start_time2 + stim_duration
-      }
-      else {
-        show_start_time2 = stim_start
-        show_end_time2 = stim_start + stim_duration
-        show_start_time1 = show_end_time2 + stim_SOA
-        show_end_time1 = show_start_time1 + stim_duration
-      }
+      // console.log('target', target == "Image" ? stim_X_sim[1] : stim_X_sim[0])
+      startX1 = target == "Image" ? stim_X_sim[1] : stim_X_sim[0]
+      startX2 = -startX1
     }
-    console.log('target', target, "startX1", startX1, "show_start_time1", show_start_time1)
-  };
-  // 初始化第一个 trial
-  generate_stim_condition()
+    else {
+      startX1 = 0
+      startX2 = 0
+    }
+    console.log(block_id, target, startX1)
+    return { ...tb_i, startX1: startX1, startX2, startX2 };
+  })
+  // console.log(block_id, "tb_tmp-----", tb_tmp)
 
   /**----------------------
    *    单个trial的呈现定义
@@ -131,23 +135,23 @@ let block_generator = (tb, block_id = 0, repetitions = 1, exp_phase = "Practice"
   let stim_presentation = {
     type: jsPsychPsychophysics,
     stimuli: [
-      fixation(end = 1100),
+      fixation(end = 1100),                      //TODO:  这里为什么是 1100？ 
       // 定义图片呈现 startX1 show_start_time1 等
       {
         obj_type: "image",
         file: () => jsPsych.timelineVariable("image"),
-        startX: () => startX1, // location of the cross's center in the canvas
+        startX: () => jsPsych.timelineVariable("startX1"), // location of the cross's center in the canvas
         startY: "center",
         width: 190,  // 调整图片大小 视角：3.8° x 3.8°
         heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
         show_start_time: () => show_start_time1, // ms after the start of the trial
-        show_end_time: () => show_end_time1,//出现50ms
+        show_end_time: () => show_end_time1, //出现50ms
         origin_center: true//待确定
       },
       // 定义词汇呈现 startX2 show_start_time2 等
       {
         obj_type: 'text',
-        startX: () => startX2,
+        startX: jsPsych.timelineVariable("startX2"),
         startY: "center", //图形和文字距离 与加号等距
         content: () => jsPsych.timelineVariable('word'),
         font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
@@ -162,7 +166,7 @@ let block_generator = (tb, block_id = 0, repetitions = 1, exp_phase = "Practice"
     response_start_time: () => Math.max(show_end_time1, show_end_time2),
     //结束时间，一共作答时间持续1500ms
     trial_duration: () => Math.max(show_end_time1, show_end_time2) + 1500,
-    on_start: generate_stim_condition,
+    // on_start: generate_stim_condition, 
     data: function () { return jsPsych.timelineVariable("identify") },
     on_finish: function (data) {
       data.correct_response = jsPsych.timelineVariable("identify");
@@ -173,8 +177,14 @@ let block_generator = (tb, block_id = 0, repetitions = 1, exp_phase = "Practice"
       data.valence = jsPsych.timelineVariable("valence");
       data.matchness = jsPsych.timelineVariable("matchness");
       data.exp_phase = exp_phase
-      data.block_type = block_type[block_id]
-      console.log('finishi', data.target, data.image, data.word, data.valence, data.matchness)
+      data.block_type = () => block_type[block_id]
+      // console.log(
+      //   "\nfinish-------------------------:\n",
+      //   "startX1", startX1,
+      //   "startX2", startX2,
+      //   "show_start_time1", show_start_time1,
+      //   "show_start_time2", show_start_time2
+      // )
     }
   }
   let trial_feedback = {
@@ -211,12 +221,12 @@ let block_generator = (tb, block_id = 0, repetitions = 1, exp_phase = "Practice"
    *------------------------**/
   let block_timeline = {
     timeline: trial_procedure,
-    timeline_variables: tb,
+    timeline_variables: tb_tmp,
     randomize_order: true,
     repetitions: repetitions
   };
 
-  let stim_length = tb.length * repetitions
+  let stim_length = tb_tmp.length * repetitions
   let block_feedback = {
     type: jsPsychHtmlKeyboardResponse,
     stimulus: function () {
@@ -288,8 +298,8 @@ let prac_session_generator = (repetitions = 1) => {
   console.log('prac_block_id', block_id)
 
 
-  let feedback_gow_generator = (block_type_i, tb_tmp, repetitions) => {
-    let stim_length = tb_tmp.length * repetitions
+  let feedback_gow_generator = (block_type_i, bid, repetitions) => {
+    let stim_length = tb[bid].length * repetitions
     return {
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function () {
@@ -314,32 +324,20 @@ let prac_session_generator = (repetitions = 1) => {
 
   let loop_timeline = []
   block_id.forEach((bid, order) => {
-    let loop_node
-    let tb_tmp
-    switch (bid) {
-      case 0:
-        tb_tmp = tb_img
-        break;
-      case 1:
-        tb_tmp = tb_word
-        break;
-      case 2:
-        tb_tmp = tb_sim
-        break;
-    }
-    loop_node = block_generator(tb_tmp, bid, repetitions)
+    let loop_node = block_generator(bid, repetitions)
+    if (order == 0) loop_timeline.push(Instructions1_generator(block_type[block_id[order]]))
     loop_timeline.push(loop_node)
     if (order < block_id.length - 1) loop_timeline.push(
       feedback_gow_generator(
         block_type[block_id[order + 1]],
-        tb_tmp,
+        bid,
         repetitions
       )
     )
   })
 
   return { timeline: loop_timeline }
-}
+};
 
 
 /**--------------------------------------------
@@ -407,22 +405,9 @@ let formal_session_generator = (repetition_stim = 3, repetition_block = 4) => {
 
   let repeatblocks = []
   block_id.forEach((bid, order) => {
-    let loop_node
-    let tb_tmp
-    switch (bid) {
-      case 0:
-        tb_tmp = tb_img
-        break;
-      case 1:
-        tb_tmp = tb_word
-        break;
-      case 2:
-        tb_tmp = tb_sim
-        break;
-    }
-    let block_type_i = block_type[block_id[order + 1]]
     // 生成 trials
-    loop_node = block_generator(tb_tmp, bid, repetition_stim, "Formal")
+    let loop_node = block_generator(bid, repetition_stim, "Formal")
+    let block_type_i = block_type[block_id[order + 1]]
     // 加入 block 引入部分
     if (order < block_id.length - 1) repeatblocks.push(p_gotonext(block_type_i))
     // 加入 trials + 休息
@@ -447,7 +432,6 @@ if (!test_mode) {
   timeline.push(chinrest);
   timeline.push(fullscreen_trial);
 }
-timeline.push(Instructions1_generator());
 timeline.push(prac_session_generator())
 timeline.push(formal_session_generator(repetition_stim, repetition_block))
 
