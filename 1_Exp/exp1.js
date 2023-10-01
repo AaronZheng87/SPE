@@ -36,17 +36,14 @@ let add_pages1 = () => [
   `<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入刺激呈现顺序为<span style='color: yellow;'>${block_type[0]}</span>的练习</span></p><div>`
 ];
 // 在指导语呈现前对刺激进行随机排序
-// let on_load_callback1 = () => {
-//   // 对刺激顺序进行随机
-//   (() => {
-//     // console.log('SUBJ_INFO', SUBJ_INFO)
-//     shuffle_stim(SUBJ_INFO["ID"])
-//     // 生成不同 block 的刺激矩阵，24个为一组。 
-//     stim_matrix_generator()
-//     // console.log('tb', tb)
-//   })()
-// }
-let instructions1 = Instructions1_generator(time_consumption, add_pages1)
+let on_load_callback1 = () => {
+  // 对刺激顺序进行随机
+  (() => {
+    shuffle_stim(SUBJ_INFO["ID"])
+    // console.log('SUBJ_INFO', SUBJ_INFO)
+  })()
+}
+let instructions1 = Instructions1_generator(time_consumption, add_pages1, on_load_callback1)
 
 /**--------------------------------------------
  *               定义刺激
@@ -71,17 +68,15 @@ let stim_matrix_generator = () => {
     texts.forEach(((text, ind_t) => {
       images.forEach((image, ind_i) => {
         let Matchness = ind_t == ind_i
-        let Valence = texts[ind_i]
 
         let stim_dict = {
-          image: image,
-          word: text,
+          image: ind_i,
+          word: ind_t,
           target: tar,
           image_start: tar == "Image" ? stim_starts[0] : stim_starts[1],
           image_end: tar == "Image" ? stim_ends[0] : stim_ends[1],
           word_start: tar == "Word" ? stim_starts[0] : stim_starts[1],
           word_end: tar == "Word" ? stim_ends[0] : stim_ends[1],
-          valence: Valence,
           matchness: Matchness ? "Match" : "Mismatch"
         }
 
@@ -91,9 +86,6 @@ let stim_matrix_generator = () => {
     }))
   })
 };
-shuffle_stim()
-// 生成不同 block 的刺激矩阵，24个为一组。 
-//! 必须在 shuffle 后生成刺激，因为 图片顺序和按键顺序都变了。 
 stim_matrix_generator()
 
 
@@ -111,7 +103,7 @@ let trials_generator = (repetitions = 1, practice = true) => {
         fixation(),
         {
           obj_type: "image",
-          file: function () { return jsPsych.timelineVariable("image") },
+          file: () => images[jsPsych.timelineVariable("image")],
           startX: "center", // location of the cross's center in the canvas
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
@@ -124,11 +116,8 @@ let trials_generator = (repetitions = 1, practice = true) => {
           obj_type: 'text',
           startX: "center",
           startY: "center", //图形和文字距离 与加号等距
-          content: function () {
-            return jsPsych.timelineVariable('word');//记得后面要加括号
-          },
+          content: () => texts[jsPsych.timelineVariable('word')],
           font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
-
           text_color: 'white',
           show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
           show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
@@ -139,17 +128,17 @@ let trials_generator = (repetitions = 1, practice = true) => {
       response_start_time: 1200, //TODO: 开始作答时间，第二个刺激结束开始计算
       trial_duration: 2700,      //结束时间，一共作答时间持续1500ms
       on_finish: function (data) {
-        data.image = jsPsych.timelineVariable("image");
-        data.word = jsPsych.timelineVariable("word");
+        data.image = images[jsPsych.timelineVariable("image")];
+        data.word = texts[jsPsych.timelineVariable("word")];
         data.target = jsPsych.timelineVariable("target");
         // data.test = jsPsych.timelineVariable("test");
         // data.image_start = jsPsych.timelineVariable("image_start");
         // data.word_start = jsPsych.timelineVariable("word_start");
-        data.valence = jsPsych.timelineVariable("valence");
+        data.valence = texts[jsPsych.timelineVariable("image")];
         data.matchness = jsPsych.timelineVariable("matchness");
-        let correct_response = data.matchness == "Match" ? key[0] : key[1];
-        data.correct = correct_response == data.key_press;//0错1对
-        console.log('correct_response', data.matchness, correct_response, data.key_press, data.correct)
+        data.correct_response = data.matchness == "Match" ? key[0] : key[1];
+        data.correct = data.correct_response == data.response;//0错1对
+        console.log('correct_response', data.matchness, data.correct_response, data.response, data.correct)
         data.exp_condition = practice ? "Practice" : "Formal"
       }
     }]
@@ -276,7 +265,7 @@ var repeatblock = {
 
 if (!test_model) {
   // timeline.push(welcome);
-  // timeline.push(basic_info_instru_generator());
+  timeline.push(basic_info_instru_generator());
   // timeline.push(chinrest);
   // timeline.push(fullscreen_trial);
 }

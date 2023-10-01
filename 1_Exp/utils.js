@@ -116,7 +116,7 @@ var shuffle_stim = (info_id) => {
   */
 
   let subj_id = info_id ? info_id : Math.random().toFixed(4) * 10000;
-  // console.log(' subj_id', subj_id)
+  console.log(' subj_id', subj_id)
   word = permutation(texts, 3) //对应的文字
   texts = word[parseInt(subj_id) % 6] //被试id除以6，求余数
   key = permutation(key, 2)[parseInt(subj_id) % 2] //对应的按键
