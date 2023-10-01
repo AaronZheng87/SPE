@@ -22,6 +22,32 @@ const stim_ends = [1050, 1200]
 const tb_repetitions = test_model ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
 blockTotalNum1 = test_model ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
 
+/**----------------------
+ *    定义指导语
+ *------------------------**/
+
+let block_type = ["先图形后文字", "先文字后图形"]
+block_type = jsPsych.randomization.shuffle(block_type)
+console.log('block_type', block_type)
+
+let time_consumption = 40
+let add_pages1 = () => [
+  `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成两组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形呈现</span>条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下4组匹配任务，每组包括60次按键反应，每组完成后会有一分钟左右的休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约${time_consumption}分钟。</p>`,
+  `<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入刺激呈现顺序为<span style='color: yellow;'>${block_type[0]}</span>的练习</span></p><div>`
+];
+// 在指导语呈现前对刺激进行随机排序
+// let on_load_callback1 = () => {
+//   // 对刺激顺序进行随机
+//   (() => {
+//     // console.log('SUBJ_INFO', SUBJ_INFO)
+//     shuffle_stim(SUBJ_INFO["ID"])
+//     // 生成不同 block 的刺激矩阵，24个为一组。 
+//     stim_matrix_generator()
+//     // console.log('tb', tb)
+//   })()
+// }
+let instructions1 = Instructions1_generator(time_consumption, add_pages1)
+
 /**--------------------------------------------
  *               定义刺激
  *---------------------------------------------**/
@@ -48,17 +74,15 @@ let stim_matrix_generator = () => {
         let Valence = texts[ind_i]
 
         let stim_dict = {
-          Image: image,
+          image: image,
           word: text,
-          identify: Matchness ? key[0] : key[1],
           target: tar,
-          test: tar == "Image" ? "Word" : "Image",
           image_start: tar == "Image" ? stim_starts[0] : stim_starts[1],
           image_end: tar == "Image" ? stim_ends[0] : stim_ends[1],
           word_start: tar == "Word" ? stim_starts[0] : stim_starts[1],
           word_end: tar == "Word" ? stim_ends[0] : stim_ends[1],
-          Valence: Valence,
-          Matchness: Matchness ? "Match" : "Mismatch"
+          valence: Valence,
+          matchness: Matchness ? "Match" : "Mismatch"
         }
 
         tb.push(stim_dict)
@@ -67,24 +91,27 @@ let stim_matrix_generator = () => {
     }))
   })
 };
-// 对刺激顺序进行随机
 shuffle_stim()
-// 生成不同 block 的刺激矩阵，24个为一组。 原因在于平衡同时呈现时的 target的左右问题。
+// 生成不同 block 的刺激矩阵，24个为一组。 
+//! 必须在 shuffle 后生成刺激，因为 图片顺序和按键顺序都变了。 
 stim_matrix_generator()
+
 
 /**--------------------------------------------
  *               定义练习阶段
  *---------------------------------------------**/
 
-let prac_trials = {
-  timeline: [
+let trials_generator = (repetitions = 1, practice = true) => {
+
+  // 定义 fixation 图片和文字呈现
+  let timeline = [
     {
       type: jsPsychPsychophysics,
       stimuli: [
         fixation(),
         {
           obj_type: "image",
-          file: function () { return jsPsych.timelineVariable("Image") },
+          file: function () { return jsPsych.timelineVariable("image") },
           startX: "center", // location of the cross's center in the canvas
           startY: "center",
           width: 190,  // 调整图片大小 视角：3.8° x 3.8°
@@ -111,37 +138,41 @@ let prac_trials = {
       choices: ['f', 'j'],
       response_start_time: 1200, //TODO: 开始作答时间，第二个刺激结束开始计算
       trial_duration: 2700,      //结束时间，一共作答时间持续1500ms
-      data: function () { return jsPsych.timelineVariable("identify") },
       on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify");
-        data.correct = data.correct_response == data.key_press;//0错1对
-        data.Image = jsPsych.timelineVariable("Image");
+        data.image = jsPsych.timelineVariable("image");
         data.word = jsPsych.timelineVariable("word");
         data.target = jsPsych.timelineVariable("target");
-        data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
-        data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence");
-        data.Matchness = jsPsych.timelineVariable("Matchness");
-        data.exp_condition = "Practice"
+        // data.test = jsPsych.timelineVariable("test");
+        // data.image_start = jsPsych.timelineVariable("image_start");
+        // data.word_start = jsPsych.timelineVariable("word_start");
+        data.valence = jsPsych.timelineVariable("valence");
+        data.matchness = jsPsych.timelineVariable("matchness");
+        let correct_response = data.matchness == "Match" ? key[0] : key[1];
+        data.correct = correct_response == data.key_press;//0错1对
+        console.log('correct_response', data.matchness, correct_response, data.key_press, data.correct)
+        data.exp_condition = practice ? "Practice" : "Formal"
       }
-    },
+    }]
+
+  // 练习加入反馈
+  if (practice) timeline.push(
     {
       data: {
-        screen_id: "feedback"//这里为反馈
+        screen_id: "feedback"
       },
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function () {
-        let keypress = jsPsych.data.get().last(1).values()[0].key_press; // 被试按键
-        //let trial_keypress = jsPsych.data.get().last(1).values()[0].correct; //该trial正确的按键
-        let time = jsPsych.data.get().last(1).values()[0].rt;
-        let trial_correct_response = jsPsych.data.get().last(1).values()[0].correct_response;//该trial正确的按键
+
+        let last_data = jsPsych.data.get().last(1).values()[0]
+        console.log('last_data', last_data)
+
+        let time = last_data.rt;
         if (time > 1500 || time === null) { //大于1500或为null为过慢
           return "<span class='add_' style='color:yellow; font-size: 70px;'> 太慢! </span>"
         } else if (time < 200) { //小于两百为过快反应
           return "<span style='color:yellow; font-size: 70px;'>过快! </span>"
         } else {
-          if (keypress == trial_correct_response) { //如果按键 == 正确按键
+          if (last_data.correct == 1) { //如果按键 == 正确按键
             return "<span style='color:GreenYellow; font-size: 70px;'>正确! </span>"
           }
           else {
@@ -151,21 +182,22 @@ let prac_trials = {
       },
       choices: "NO_KEYS",
       trial_duration: 300,//300ms反馈
-    }
-  ],
-  timeline_variables: tb,
-  randomize_order: true,
-  repetitions: 1,
-  on_finish: function () {
-    // $("body").css("cursor", "default"); //鼠标出现
-  }
-};
+    })
+
+  return {
+    timeline: timeline,
+    timeline_variables: tb,
+    randomize_order: true,
+    repetitions: repetitions
+  };
+}
+
 var feedback_p = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: function () {
     let trials = jsPsych.data.get().filter(
       [{ correct: true }, { correct: false }]
-    ).last(24); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
+    ).last(tb.length); // 运行逻辑：先挑出data里的所有的correct：true/false的数据行，成为新的数组，然后对倒数的某几组进行计算
     //这里填入timeline_variables里面的trial数量
     let correct_trials = trials.filter({
       correct: true
@@ -197,84 +229,24 @@ var if_node = { //if_node 用于判断是否呈现feedback，feedback_continue_p
   }
 };
 var loop_node = {
-  timeline: [prac_trials, if_node],
+  timeline: [trials_generator(), if_node],
   loop_function: function () {
     var trials = jsPsych.data.get().filter(
       [{ correct: true }, { correct: false }]
-    ).last(24);
+    ).last(tb.length);
     var correct_trials = trials.filter({
       correct: true
     });
     var accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-    if (accuracy >= prac_acc_thres) {
-      return false;//end 进入正式实验前的反馈
-    } else if (accuracy < acc) { // repeat
-      return true;
-    }
+    if (accuracy >= prac_acc_thres) return false;
+    else if (accuracy < prac_acc_thres) return true;
   }
 };
 
 /**--------------------------------------------
  *               定义正式实验
  *---------------------------------------------**/
-
-let formal_trials = {
-  timeline: [
-    {
-      type: jsPsychPsychophysics,
-      stimuli: [
-        fixation(),
-        {
-          obj_type: "image",
-          file: function () { return jsPsych.timelineVariable("Image") },
-          startX: "center", // location of the cross's center in the canvas
-          startY: "center",
-          width: 190,  // 调整图片大小 视角：3.8° x 3.8°
-          heigth: 190, // 调整图片大小 视角：3.8° x 3.8°
-          show_start_time: jsPsych.timelineVariable("image_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("image_end"),//出现50ms
-          origin_center: true//待确定
-        },//上一组end时间减去下一组show时间就是空屏的100ms
-        {
-          obj_type: 'text',
-          startX: "center",
-          startY: "center", //图形和文字距离 与加号等距
-          content: function () {
-            return jsPsych.timelineVariable('word');//记得后面要加括号
-          },
-          font: `${80}px 'Arial'`, //字体和颜色设置 文字视角：3.6° x 1.6°
-          text_color: 'white',
-          show_start_time: jsPsych.timelineVariable("word_start"), // ms after the start of the trial
-          show_end_time: jsPsych.timelineVariable("word_end"),//直到反应才消失刺激
-          origin_center: true//带确定
-        }
-      ],
-      choices: ['f', 'j'],
-      response_start_time: 1200, //TODO: 开始作答时间，第二个刺激结束开始计算
-      trial_duration: 2700,      //结束时间，一共作答时间持续1500ms
-      data: function () { return jsPsych.timelineVariable("identify") },
-      on_finish: function (data) {
-        data.correct_response = jsPsych.timelineVariable("identify");
-        data.correct = data.correct_response == data.key_press;//0错1对
-        data.Image = jsPsych.timelineVariable("Image");
-        data.word = jsPsych.timelineVariable("word");
-        data.target = jsPsych.timelineVariable("target");
-        data.test = jsPsych.timelineVariable("test");
-        data.image_start = jsPsych.timelineVariable("image_start");
-        data.word_start = jsPsych.timelineVariable("word_start");
-        data.Valence = jsPsych.timelineVariable("Valence");
-        data.Matchness = jsPsych.timelineVariable("Matchness");
-        data.exp_condition = "Formal"
-      }
-    },
-  ],
-  timeline_variables: tb,
-  randomize_order: true,
-  repetitions: tb_repetitions,
-  on_finish: function () {
-    // $("body").css("cursor", "default"); //鼠标出现
-  }
-};
+let formal_trials = trials_generator(tb_repetitions, practice = false)
 var feedback_f = {
   type: jsPsychHtmlKeyboardResponse,
   stimulus: function () {
@@ -303,14 +275,13 @@ var repeatblock = {
  *---------------------------------------------**/
 
 if (!test_model) {
-  timeline.push(welcome);
-  timeline.push(basic_information);
-  timeline.push(information);
-  timeline.push(chinrest);
-  timeline.push(fullscreen_trial);
+  // timeline.push(welcome);
+  // timeline.push(basic_info_instru_generator());
+  // timeline.push(chinrest);
+  // timeline.push(fullscreen_trial);
 }
-timeline.push(Instructions1_generator());
-//timeline.push(prac_trials);
+timeline.push(instructions1);
+// timeline.push(prac_trials);
 //timeline.push(feedback_p);
 timeline.push(loop_node);
 timeline.push(feedback_goformal);
