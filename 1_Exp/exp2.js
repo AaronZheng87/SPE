@@ -6,7 +6,7 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp2' + info["ID"] + '.csv');
+    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp2' + SUBJ_INFO["ID"] + '.csv');
     if (!test_mode) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }

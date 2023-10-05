@@ -1,4 +1,4 @@
-test_model = false
+test_mode = false
 
 const jsPsych = initJsPsych({
   /* auto_update_progress_bar: true,
@@ -6,8 +6,8 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1' + info["ID"] + '.csv');
-    if (!test_model) document.exitFullscreen(); // 退出全屏
+    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1' + SUBJ_INFO["ID"] + '.csv');
+    if (!test_mode) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
 });
@@ -19,8 +19,8 @@ const prac_acc_thres = 85;
 const stim_starts = [1000, 1150]// the previous is for target the last one is for test
 const stim_ends = [1050, 1200]
 
-const tb_repetitions = test_model ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
-blockTotalNum1 = test_model ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
+const tb_repetitions = test_mode ? 1 : 5;   // 此处填入试次的重复次数 5, 测试为 1
+blockTotalNum1 = test_mode ? 3 : 6;         // 此处填入总block数量 6, 测试为 3
 
 /**----------------------
  *    定义指导语
@@ -263,7 +263,7 @@ var repeatblock = {
  *               定义总的 timeline
  *---------------------------------------------**/
 
-if (!test_model) {
+if (!test_mode) {
   // timeline.push(welcome);
   timeline.push(basic_info_instru_generator());
   // timeline.push(chinrest);
@@ -276,6 +276,6 @@ timeline.push(loop_node);
 timeline.push(feedback_goformal);
 timeline.push(repeatblock);
 
-if (!test_model) timeline.push(finish);
+if (!test_mode) timeline.push(finish);
 
 jsPsych.run(timeline);
