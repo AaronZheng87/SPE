@@ -14,7 +14,7 @@ const jsPsych = initJsPsych({
 
 var key = ['f', 'j']//按键
 //正确率85%
-const prac_acc_thres = 85;
+const prac_acc_thres = 20;
 
 const stim_starts = [1000, 1150]// the previous is for target the last one is for test
 const stim_ends = [1050, 1200]
@@ -32,8 +32,8 @@ console.log('block_type', block_type)
 
 let time_consumption = 40
 let add_pages1 = () => [
-  `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成两组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形呈现</span>条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下4组匹配任务，每组包括60次按键反应，每组完成后会有一分钟左右的休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约${time_consumption}分钟。</p>`,
-  `<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入刺激呈现顺序为<span style='color: yellow;'>${block_type[0]}</span>的练习</span></p><div>`
+  `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成两组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形呈现</span>混合条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下6组匹配任务，每组包括120次按键反应，每组完成后会有一分钟左右的休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约${time_consumption}分钟。</p>`,
+  `<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入练习</p><div>`
 ];
 // 在指导语呈现前对刺激进行随机排序
 let on_load_callback1 = () => {
@@ -264,10 +264,10 @@ var repeatblock = {
  *---------------------------------------------**/
 
 if (!test_mode) {
-  // timeline.push(welcome);
+  timeline.push(welcome);
   timeline.push(basic_info_instru_generator());
-  // timeline.push(chinrest);
-  // timeline.push(fullscreen_trial);
+  timeline.push(chinrest);
+  timeline.push(fullscreen_trial);
 }
 timeline.push(instructions1);
 // timeline.push(prac_trials);
