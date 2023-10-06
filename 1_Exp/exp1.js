@@ -1,4 +1,4 @@
-test_mode = false
+test_mode = true
 
 const jsPsych = initJsPsych({
   /* auto_update_progress_bar: true,
@@ -275,7 +275,7 @@ timeline.push(instructions1);
 timeline.push(loop_node);
 timeline.push(feedback_goformal);
 timeline.push(repeatblock);
-
+timeline.push(feedback_final)
 if (!test_mode) timeline.push(finish);
 
 jsPsych.run(timeline);
