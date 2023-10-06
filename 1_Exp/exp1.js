@@ -6,7 +6,7 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1' + SUBJ_INFO["ID"] + '.csv');
+    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
     if (!test_mode) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
@@ -125,8 +125,8 @@ let trials_generator = (repetitions = 1, practice = true) => {
         }
       ],
       choices: ['f', 'j'],
-      response_start_time: 1200, //TODO: 开始作答时间，第二个刺激结束开始计算
-      trial_duration: 2700,      //结束时间，一共作答时间持续1500ms
+      response_start_time: 1150, //! 开始作答时间，第二个刺激呈现开始计算
+      trial_duration: 2700,      //结束时间，一共作答时间持续1550ms
       on_finish: function (data) {
         data.image = images[jsPsych.timelineVariable("image")];
         data.word = texts[jsPsych.timelineVariable("word")];
@@ -138,7 +138,7 @@ let trials_generator = (repetitions = 1, practice = true) => {
         data.matchness = jsPsych.timelineVariable("matchness");
         data.correct_response = data.matchness == "Match" ? key[0] : key[1];
         data.correct = data.correct_response == data.response;//0错1对
-        console.log('correct_response', data.matchness, data.correct_response, data.response, data.correct)
+        // console.log('correct_response', data.matchness, data.correct_response, data.response, data.correct)
         data.exp_condition = practice ? "Practice" : "Formal"
       }
     }]
@@ -153,7 +153,7 @@ let trials_generator = (repetitions = 1, practice = true) => {
       stimulus: function () {
 
         let last_data = jsPsych.data.get().last(1).values()[0]
-        console.log('last_data', last_data)
+        // console.log('last_data', last_data)
 
         let time = last_data.rt;
         if (time > 1500 || time === null) { //大于1500或为null为过慢
