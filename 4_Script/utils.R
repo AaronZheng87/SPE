@@ -11,10 +11,10 @@ jspsycsv2df <- function(path){
   
   df2 <- df %>% 
     dplyr::select(subj_idx, gender, year, education, 
-                  dist, trial_type, Image, word, target, test, 
-                  image_start, word_start, Valence, Matchness, 
-                  exp_condition, response, key_press, correct_response, 
-                  correct, rt)
+                          dist, trial_type, image, word, target, #test, 
+                          valence, matchness, #image_start, word_start,
+                          exp_condition, response, key_press, correct_response, 
+                          correct, rt)
   
   df3 <- df2 %>% 
     dplyr::filter(trial_type == "psychophysics")

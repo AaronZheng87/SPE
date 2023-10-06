@@ -1,11 +1,12 @@
 rm(list = ls())#clear the environment
 ###############import the packages##############
 library(tidyverse)
+library(showtext)
 library(here)
 source('4_Script/utils.R')
-
+showtext.auto()
 #set the path#
-file_path <- here("5_Data")
+file_path <- here("5_Data", "3_test_yuanrui3")
 
 files <- list.files(file_path, pattern = "csv", full.names = TRUE, recursive =T)
 all <- purrr::map_dfr(.x = files, .f = ~jspsycsv2df(.x))
@@ -39,7 +40,7 @@ aa$Valence = factor(aa$Valence, levels = c("自我", "朋友", "他人"))
 # a2$y
 
 fig_rt = aa |>
-  ggplot(aes(Matchness, rt, fill = Valence)) +
+  ggplot(aes(matchness, rt, fill = valence)) +
   stat_summary(
     fun = "mean",
     geom = "bar",
@@ -76,6 +77,6 @@ library(patchwork)
 (fig_rt / fig_acc) + plot_layout(guides = "collect")
 
 library(lmerTest)
-lmer(rt ~ Valence + (1|subj_idx), aa |> filter(Matchness == "Match")) |> anova()
-bb = lmer(acc ~ Valence + (1|subj_idx), aa |> filter(Matchness == "Match"))
+lmer(rt ~ Valence + (1|subj_idx), aa |> filter(matchness == "Match")) |> anova()
+bb = lmer(acc ~ Valence + (1|subj_idx), aa |> filter(matchness == "Match"))
 bb |> emmeans::emmeans(~Valence, type = "response")
