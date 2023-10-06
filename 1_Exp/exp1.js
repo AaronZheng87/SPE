@@ -1,4 +1,4 @@
-test_mode = true
+test_mode = false
 
 const jsPsych = initJsPsych({
   /* auto_update_progress_bar: true,
@@ -14,7 +14,7 @@ const jsPsych = initJsPsych({
 
 var key = ['f', 'j']//按键
 //正确率85%
-const prac_acc_thres = 20;
+const prac_acc_thres = 85;
 
 const stim_starts = [1000, 1150]// the previous is for target the last one is for test
 const stim_ends = [1050, 1200]

@@ -360,8 +360,7 @@ var feedback_final = {
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                           <div><p class='context'>您本次实验共正确回答了" + accuracy + "% 的试次。</p>" +
       "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
-      "<p class='context'>恭喜您完成练习。按任意键进入正式实验。</p>" +
-      "<p class='footer' style='font-size: 35px; line-height:40px;'>请在进入正式实验实验之前将您的<span style='color: lightgreen;'>食指</span>放在电脑键盘的相应键位上进行按键。</p>"
+      "<p class='context'>恭喜您完成本次实验。按任意键结束实验。</p>"
   },
   on_finish: function () {
     $("body").css("cursor", "none");
