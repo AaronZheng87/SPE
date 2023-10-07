@@ -346,20 +346,32 @@ let fixation = (start = 500, end = 1000) => {
   }
 };
 
+var formal_result = () => {
+  let trials = jsPsych.
+    data.
+    get().
+    filter(
+      // { trial_type: 'psychophysics' }
+      { exp_condition: 'Formal' }
+    )
+  // .last(720);
+  let correct_trials = trials.filter({ correct: true });
+  let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
+  let rt_mean = Math.round(correct_trials.select('rt').mean());
+  let rt_sd = Math.round(correct_trials.select('rt').sd());
+  console.log('accuracy', accuracy, rt_mean, rt_sd)
+  return [accuracy, rt_mean, rt_sd];
+};
+
 var feedback_final = {
-  type: jsPsychHtmlKeyboardResponse, 
+  type: jsPsychHtmlKeyboardResponse,
   stimulus: function () {
-    let trials = jsPsych.data.get().filter(
-      {trial_type:'psychophysics'}
-    ).last(720);
-    let correct_trials = trials.filter({
-      correct: true
-    });
-    let accuracy = Math.round(correct_trials.count() / trials.count() * 100);
-    let rt = Math.round(correct_trials.select('rt').mean());
+
+    let [accuracy, rt_mean, rt_sd] = formal_result();
+
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                           <div><p class='context'>您本次实验共正确回答了" + accuracy + "% 的试次。</p>" +
-      "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
+      `<p class='context'>您的平均反应时为${rt_mean}毫秒(sd=${rt_sd})。</p>` +
       "<p class='context'>恭喜您完成本次实验。按任意键结束实验。</p>"
   },
   on_finish: function () {

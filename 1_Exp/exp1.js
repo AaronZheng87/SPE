@@ -6,6 +6,12 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
+    let [accuracy, rt_mean, rt_sd] = formal_result();
+    alert(`
+      本次测试结束，请点击确定退出全屏，并保存数据。
+      本次测试的准确率为${accuracy}，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。
+      `
+    )
     test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
     if (!test_mode) document.exitFullscreen(); // 退出全屏
     let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
@@ -263,19 +269,19 @@ var repeatblock = {
  *               定义总的 timeline
  *---------------------------------------------**/
 
-if (!test_mode) {
-  timeline.push(welcome);
-  timeline.push(basic_info_instru_generator());
-  timeline.push(chinrest);
-  timeline.push(fullscreen_trial);
-}
+// if (!test_mode) {
+//   timeline.push(welcome);
+//   timeline.push(basic_info_instru_generator());
+//   timeline.push(chinrest);
+//   timeline.push(fullscreen_trial);
+// }
 timeline.push(instructions1);
 // timeline.push(prac_trials);
 //timeline.push(feedback_p);
-timeline.push(loop_node);
-timeline.push(feedback_goformal);
+// timeline.push(loop_node);
+// timeline.push(feedback_goformal);
 timeline.push(repeatblock);
-timeline.push(feedback_final)
-if (!test_mode) timeline.push(finish);
+// timeline.push(feedback_final)
+// if (!test_mode) timeline.push(finish);
 
 jsPsych.run(timeline);
