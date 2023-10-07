@@ -10,7 +10,24 @@ function permutation(arr, num) { //定义排列组合的function
   return r;
 }
 
+function convertMilliseconds(milliseconds) {
+  const seconds = milliseconds / 1000
+  const hours = Math.floor(seconds / 3600);
+  const minutes = Math.floor((seconds % 3600) / 60);
+  const remainingSeconds = Math.round(seconds % 60, 0);
 
+  let result = "";
+
+  if (hours > 0) {
+    result += hours.toString().padStart(2, '0') + ":";
+  }
+
+  result += minutes.toString().padStart(2, '0') + ":";
+
+  result += remainingSeconds.toString().padStart(2, '0');
+
+  return result;
+}
 
 /* basic data collection jsPsychInstructions trial 被试基本信息收集 */
 SUBJ_INFO = []

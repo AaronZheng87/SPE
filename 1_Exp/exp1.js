@@ -8,8 +8,10 @@ const jsPsych = initJsPsych({
   on_finish: function () {
     let [accuracy, rt_mean, rt_sd] = formal_result();
     alert(`
-      本次测试结束，请点击确定退出全屏，并保存数据。
-      本次测试的准确率为${accuracy}%，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。
+      本次测试结束，请点击确定退出全屏，并保存数据。\n
+      本次测试的准确率为${accuracy}%，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。\n
+      总用时${convertMilliseconds(jsPsych.getTotalTime())}。\n
+      感谢您的参与！
       `
     )
     // test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
