@@ -9,14 +9,29 @@ const jsPsych = initJsPsych({
     let [accuracy, rt_mean, rt_sd] = formal_result();
     alert(`
       本次测试结束，请点击确定退出全屏，并保存数据。
-      本次测试的准确率为${accuracy}，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。
+      本次测试的准确率为${accuracy}%，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。
       `
     )
-    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
+    // test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
     if (!test_mode) document.exitFullscreen(); // 退出全屏
-    let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
+    // let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
 });
+
+var CONDITION_ID
+const save_data = {
+  type: jsPsychPipe,
+  action: "save",
+  experiment_id: "8z5IJf9UcgxA",
+  filename: () => {
+    const subject_id = SUBJ_INFO["ID"] ? SUBJ_INFO["ID"] : Math.random().toFixed(4) * 10000;
+    const filename = `exp1_${subject_id}_${CONDITION_ID}.csv`;
+    console.log('filename', filename)
+    return filename;
+  },
+  data_string: () => jsPsych.data.get().csv()
+};
+
 
 var key = ['f', 'j']//按键
 //正确率85%
@@ -43,13 +58,15 @@ let add_pages1 = () => [
 ];
 // 在指导语呈现前对刺激进行随机排序
 let on_load_callback1 = () => {
-  // 对刺激顺序进行随机
   (() => {
     shuffle_stim(SUBJ_INFO["ID"])
-    // console.log('SUBJ_INFO', SUBJ_INFO)
   })()
 }
-let instructions1 = Instructions1_generator(time_consumption, add_pages1, on_load_callback1)
+let instructions1 = Instructions1_generator(
+  time_consumption,
+  add_pages1,
+  on_load_callback1
+)
 
 /**--------------------------------------------
  *               定义刺激
@@ -93,7 +110,12 @@ let stim_matrix_generator = () => {
   })
 };
 stim_matrix_generator()
-
+// 通过 datapip 来生成实验条件
+// setTimeout(async () => {
+//   CONDITION_ID = await jsPsychPipe.getCondition("8z5IJf9UcgxA");
+//   console.log('CONDITION_ID', CONDITION_ID)
+//   shuffle_stim(CONDITION_ID)
+// }, 1000)
 
 /**--------------------------------------------
  *               定义练习阶段
@@ -153,7 +175,7 @@ let trials_generator = (repetitions = 1, practice = true) => {
   if (practice) timeline.push(
     {
       data: {
-        screen_id: "feedback"
+        exp_condition: "feedback"
       },
       type: jsPsychHtmlKeyboardResponse,
       stimulus: function () {
@@ -269,19 +291,18 @@ var repeatblock = {
  *               定义总的 timeline
  *---------------------------------------------**/
 
-// if (!test_mode) {
-//   timeline.push(welcome);
-//   timeline.push(basic_info_instru_generator());
-//   timeline.push(chinrest);
-//   timeline.push(fullscreen_trial);
-// }
+if (!test_mode) {
+  timeline.push(welcome);
+  timeline.push(basic_info_instru_generator());
+  timeline.push(chinrest);
+  timeline.push(fullscreen_trial);
+}
 timeline.push(instructions1);
-// timeline.push(prac_trials);
-//timeline.push(feedback_p);
-// timeline.push(loop_node);
-// timeline.push(feedback_goformal);
+timeline.push(loop_node);
+timeline.push(feedback_goformal);
 timeline.push(repeatblock);
-// timeline.push(feedback_final)
-// if (!test_mode) timeline.push(finish);
+timeline.push(feedback_final)
+timeline.push(save_data);
+if (!test_mode) timeline.push(finish);
 
 jsPsych.run(timeline);

@@ -116,6 +116,7 @@ var shuffle_stim = (info_id) => {
   */
 
   let subj_id = info_id ? info_id : Math.random().toFixed(4) * 10000;
+  subj_id = Math.round(subj_id);
   console.log(' subj_id', subj_id)
   word = permutation(texts, 3) //对应的文字
   texts = word[parseInt(subj_id) % 6] //被试id除以6，求余数
@@ -129,7 +130,7 @@ var shuffle_stim = (info_id) => {
   console.log(
     `
     /**----------------------
-     *    注意：已经修改全局变量，key，images，texts, TEXT_IMAGE_PAIRS
+     *    注意：shuffle_stim 函数已经运行，全局变量已经被修改，包括，key，images，texts, TEXT_IMAGE_PAIRS
      *------------------------**/
     `
   );
