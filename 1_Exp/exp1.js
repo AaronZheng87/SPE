@@ -6,28 +6,19 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    let [accuracy, rt_mean, rt_sd] = formal_result();
-    alert(`
-      本次测试结束，请点击确定退出全屏，并保存数据。\n
-      本次测试的准确率为${accuracy}%，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。\n
-      总用时${convertMilliseconds(jsPsych.getTotalTime())}。\n
-      感谢您的参与！
-      `
-    )
-    // test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
+    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
     if (!test_mode) document.exitFullscreen(); // 退出全屏
     // let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
   }
 });
 
-var CONDITION_ID
 const save_data = {
   type: jsPsychPipe,
   action: "save",
   experiment_id: "8z5IJf9UcgxA",
   filename: () => {
     const subject_id = SUBJ_INFO["ID"] ? SUBJ_INFO["ID"] : Math.random().toFixed(4) * 10000;
-    const filename = `exp1_${subject_id}_${CONDITION_ID}.csv`;
+    const filename = `exp1_${subject_id}.csv`;
     console.log('filename', filename)
     return filename;
   },
@@ -56,7 +47,8 @@ console.log('block_type', block_type)
 let time_consumption = 40
 let add_pages1 = () => [
   `<p style='color:white; font-size: 25px; line-height: 30px;'>您将首先完成两组不同的刺激呈现顺序：<span style="color: yellow; ">先图形后文字、先文字后图形呈现</span>混合条件下，每24次按键的匹配任务练习。</p><p style='color:white; font-size: 25px; line-height: 30px;'>完成匹配任务的练习之后，您将完成每个条件下6组匹配任务，每组包括120次按键反应，每组完成后会有一分钟左右的休息时间。</p><p style='color:white; font-size: 22px; line-height: 25px;'>完成一组任务大约需要7分钟，整个实验将持续大约${time_consumption}分钟。</p>`,
-  `<p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入练习</p><div>`
+  `<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>
+  <p style = 'font-size: 25px; line-height: 30px;'>如果您明白了规则：请点击 继续 进入练习</p><div>`
 ];
 // 在指导语呈现前对刺激进行随机排序
 let on_load_callback1 = () => {
@@ -300,11 +292,12 @@ if (!test_mode) {
   timeline.push(fullscreen_trial);
 }
 timeline.push(instructions1);
+timeline.push(count_down());
 timeline.push(loop_node);
 timeline.push(feedback_goformal);
 timeline.push(repeatblock);
 timeline.push(feedback_final)
+if (!test_mode) timeline.push(finish());
 timeline.push(save_data);
-if (!test_mode) timeline.push(finish);
 
 jsPsych.run(timeline);

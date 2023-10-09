@@ -216,8 +216,6 @@ var Instructions1_generator = (time_consumption = 40, add_pages, load_callback, 
       if (load_callback) load_callback();
 
       let pages = []
-      let start = "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>",
-        end = "<p class='footer'  style = 'font-size: 25px'>如果对本实验还有不清楚之处，请立即向实验员咨询。</p>";
 
       pages.push(
         `<p class='header' style = 'font-size: 25px'>实验说明：</p><p style='color:white; font-size: 25px;line-height: 30px;'>您好，欢迎参加本实验。本次实验大约需要${time_consumption}分钟完成。</p><p style='color:white; font-size: 25px;'>在本实验中，您需要完成一个简单的知觉匹配任务。</p><p style='color:white; font-size: 25px;'>您将学习几种几何图形与不同标签的对应关系。</p>
@@ -226,11 +224,11 @@ var Instructions1_generator = (time_consumption = 40, add_pages, load_callback, 
       let tmpI = () => TEXT_IMAGE_PAIRS;
 
       pages.push(
-        start + `<div class="box">${tmpI()}</div>` +
+        "<p class='header' style = 'font-size: 25px'>请您记住如下对应关系:</p>" +
+        `<div class="box">${tmpI()}</div>` +
         `<p class='footer' style='font-size: 30px; line-height: 35px;'>您的任务是在不同图形和文字呈现顺序的条件下判断几何图形与图形名称或文字标签是否匹配，</p><p class='footer' style='color:white; font-size: 25px;'>如果二者匹配，请按<span style="color: lightgreen; font-size:25px">${key[0]}键</span></p><p class='footer' style='color:white; font-size: 25px;'>如果二者不匹配，请按<span style="color: lightgreen; font-size:25px"> ${key[1]}键</p></span><p class='footer' style='color:white; font-size: 20px;'>请在实验过程中将您的<span style="color: lightgreen;">食指</span>放在电脑键盘的相应键位上准备按键。</p></span>`
       )
 
-      pages.push(end)
       if (add_pages) pages.push(...add_pages());
 
       return pages;
@@ -290,7 +288,8 @@ var feedback_goformal = {
     return "<style>.context{color:white; font-size: 35px; line-height:40px}</style>\
                           <div><p class='context'>您正确回答了" + accuracy + "% 的试次。</p>" +
       "<p class='context'>您的平均反应时为" + rt + "毫秒。</p>" +
-      "<p class='context'>恭喜您完成练习。按任意键进入正式实验。</p>" +
+      "<p class='context'>恭喜您完成练习。现在请休息3~5分钟。</p>" +
+      "<p class='context'>之后，按任意键进入正式实验。需要注意的是，正式实验将不再提供反应是否正确的反馈。</p>" +
       "<p class='footer' style='font-size: 35px; line-height:40px;'>请在进入正式实验实验之前将您的<span style='color: lightgreen;'>食指</span>放在电脑键盘的相应键位上进行按键。</p>"
   },
   on_finish: function () {
@@ -343,12 +342,19 @@ let rest1 = {
 }
 
 
-var finish = {
-  type: jsPsychHtmlKeyboardResponse,
-  stimulus: `
-  <p>感谢您参加我们的实验，请<span style="color: yellow;">按任意键开始上传数据</span>，并通知研究者。</p>
-  <p>感谢您的配合！</p>`,
-  choices: "ALL_KEYS",
+var finish = () => {
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: () => {
+      let [accuracy, rt_mean, rt_sd] = formal_result();
+      return `
+      <h2>感谢您的参与！</h2>
+      <p>本次测试结束，您的准确率为${accuracy}%，平均反应时间为${rt_mean}ms，标准差为${rt_sd}ms。</p>
+      <p>总用时${convertMilliseconds(jsPsych.getTotalTime())}。</p>
+      <p>感谢您参加我们的实验，<span style="color: yellow;">请通知研究者</span>，等主试在场时按任意键开始上传数据。</p>
+      <p>感谢您的配合！</p>`},
+    choices: "ALL_KEYS",
+  }
 };
 
 let fixation = (start = 500, end = 1000) => {
@@ -396,3 +402,13 @@ var feedback_final = {
     $("body").css("cursor", "none");
   }
 }
+
+var count_down = () => {
+
+  return {
+    type: jsPsychHtmlKeyboardResponse,
+    stimulus: `<count-down title=""></count-down>`,
+    trial_duration: 3650
+  }
+}
+
