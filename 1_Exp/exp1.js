@@ -1,4 +1,5 @@
 test_mode = false
+var subject_id
 
 const jsPsych = initJsPsych({
   /* auto_update_progress_bar: true,
@@ -6,9 +7,19 @@ const jsPsych = initJsPsych({
      type: naodao,
    }*/
   on_finish: function () {
-    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] + '.csv');
-    if (!test_mode) document.exitFullscreen(); // 退出全屏
-    // let bodyNode = document.getElementsByTagName("body"); // 获取Body窗体
+    test_mode ? jsPsych.data.displayData() : jsPsych.data.get().localSave('csv', 'exp1_' + SUBJ_INFO["ID"] ? SUBJ_INFO["ID"] : `exp1_${subject_id}` + '.csv');
+    // 退出全屏
+    if (document.fullscreenElement) { // 检查是否处于全屏状态
+      if (document.exitFullscreen) {
+        document.exitFullscreen();
+      } else if (document.mozCancelFullScreen) { // Firefox
+        document.mozCancelFullScreen();
+      } else if (document.webkitExitFullscreen) { // Chrome, Safari and Opera
+        document.webkitExitFullscreen();
+      } else if (document.msExitFullscreen) { // IE/Edge
+        document.msExitFullscreen();
+      }
+    }
   }
 });
 
@@ -17,9 +28,9 @@ const save_data = {
   action: "save",
   experiment_id: "8z5IJf9UcgxA",
   filename: () => {
-    const subject_id = SUBJ_INFO["ID"] ? SUBJ_INFO["ID"] : Math.random().toFixed(4) * 10000;
+    subject_id = SUBJ_INFO["ID"] ? SUBJ_INFO["ID"] : Math.random().toFixed(4) * 10000;
     const filename = `exp1_${subject_id}.csv`;
-    console.log('filename', filename)
+    console.log('upload filename', filename)
     return filename;
   },
   data_string: () => jsPsych.data.get().csv()
@@ -28,7 +39,7 @@ const save_data = {
 
 var key = ['f', 'j']//按键
 //正确率85%
-const prac_acc_thres = 20;
+const prac_acc_thres = 85;
 
 const stim_starts = [1000, 1150]// the previous is for target the last one is for test
 const stim_ends = [1050, 1200]
@@ -285,18 +296,18 @@ var repeatblock = {
  *               定义总的 timeline
  *---------------------------------------------**/
 
-// if (!test_mode) {
-//   timeline.push(welcome);
-//   timeline.push(basic_info_instru_generator());
-//   timeline.push(chinrest);
-//   timeline.push(fullscreen_trial);
-// }
+if (!test_mode) {
+  timeline.push(welcome);
+  timeline.push(basic_info_instru_generator());
+  timeline.push(chinrest);
+  timeline.push(fullscreen_trial);
+}
 timeline.push(instructions1);
 timeline.push(count_down());
 timeline.push(loop_node);
-// timeline.push(feedback_goformal);
-// timeline.push(repeatblock);
-// timeline.push(feedback_final)
+timeline.push(feedback_goformal);
+timeline.push(repeatblock);
+timeline.push(feedback_final)
 if (!test_mode) timeline.push(finish());
 timeline.push(save_data);
 
