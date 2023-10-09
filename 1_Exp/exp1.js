@@ -28,7 +28,7 @@ const save_data = {
 
 var key = ['f', 'j']//按键
 //正确率85%
-const prac_acc_thres = 85;
+const prac_acc_thres = 20;
 
 const stim_starts = [1000, 1150]// the previous is for target the last one is for test
 const stim_ends = [1050, 1200]
@@ -285,18 +285,18 @@ var repeatblock = {
  *               定义总的 timeline
  *---------------------------------------------**/
 
-if (!test_mode) {
-  timeline.push(welcome);
-  timeline.push(basic_info_instru_generator());
-  timeline.push(chinrest);
-  timeline.push(fullscreen_trial);
-}
+// if (!test_mode) {
+//   timeline.push(welcome);
+//   timeline.push(basic_info_instru_generator());
+//   timeline.push(chinrest);
+//   timeline.push(fullscreen_trial);
+// }
 timeline.push(instructions1);
 timeline.push(count_down());
 timeline.push(loop_node);
-timeline.push(feedback_goformal);
-timeline.push(repeatblock);
-timeline.push(feedback_final)
+// timeline.push(feedback_goformal);
+// timeline.push(repeatblock);
+// timeline.push(feedback_final)
 if (!test_mode) timeline.push(finish());
 timeline.push(save_data);
 
