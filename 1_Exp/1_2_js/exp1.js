@@ -293,17 +293,17 @@ var repeatblock = {
 
 if (!test_mode) {
   timeline.push(welcome);
-  // timeline.push(basic_info_instru_generator());
-  // timeline.push(chinrest);
-  // timeline.push(fullscreen_trial);
+  timeline.push(basic_info_instru_generator());
+  timeline.push(chinrest);
+  timeline.push(fullscreen_trial);
 }
-// timeline.push(instructions1);
-// timeline.push(count_down());
-// timeline.push(loop_node);
-// timeline.push(feedback_goformal);
-// timeline.push(repeatblock);
-// timeline.push(feedback_final)
-// if (!test_mode) timeline.push(finish());
-// timeline.push(save_data);
+timeline.push(instructions1);
+timeline.push(count_down());
+timeline.push(loop_node);
+timeline.push(feedback_goformal);
+timeline.push(repeatblock);
+timeline.push(feedback_final)
+if (!test_mode) timeline.push(finish());
+timeline.push(save_data);
 
 jsPsych.run(timeline);
