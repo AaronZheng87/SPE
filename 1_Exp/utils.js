@@ -94,7 +94,7 @@ var basic_info_instru_generator = () => {
       // 教育经历
       {
         type: jsPsychSurveyHtmlForm,
-        preamble: "<p style = 'color : white'>您的教育经历是</p>",
+        preamble: "<p style = 'color : white'>您的教育经历(在读)是</p>",
         html: function () {
           return `
               <p><select name="Q0" size=10>
