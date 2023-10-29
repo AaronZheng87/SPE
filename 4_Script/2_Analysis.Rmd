@@ -1,0 +1,130 @@
+---
+title: "Untitled"
+author: "郑元瑞"
+date: "`r Sys.Date()`"
+output: html_document
+---
+# Sample size determination
+## import packages and data preprocessing
+### import packages
+```{r}
+rm(list = ls())#clear the environment
+###############import the packages##############
+library(tidyverse)
+library(showtext)
+library(here)
+library(BayesFactor)
+source('../4_Script/utils.R')
+showtext.auto()
+#set the path#
+file_path <- here("5_Data", "3_test_yuanrui3")
+```
+### import data
+```{r}
+files <- list.files(file_path, pattern = "csv", full.names = TRUE, recursive =T)
+all <- purrr::map_dfr(.x = files, .f = ~jspsycsv2df(.x))
+```
+### data preprocessing
+```{r}
+data <- all %>% #exclude practice
+  dplyr::filter(exp_condition == "Formal")
+##################################
+# this is unnecessary for the true data!
+nrow(data)/3
+data[1:720,]$subj_idx <- '2'
+data[721:1440,]$subj_idx <- '3'
+##################################
+data2 <- data %>% 
+  dplyr::filter(rt != "null")
+data2$rt <- as.numeric(data2$rt)
+df.agg1 <- data2 %>% 
+  dplyr::group_by(subj_idx, target, valence, matchness) %>% 
+  dplyr::summarise(rt_mean = mean(rt), 
+            sd = sd(rt)) %>% 
+  dplyr::ungroup()
+
+```
+## Sequential Bayes factor Analysis(rmANOVA)
+
+```{r}
+df.agg1$subj_idx <- as.factor(df.agg1$subj_idx)
+
+subjects1 <- sort(unique(df.agg1$subj_idx)) # sort by subjects' id
+
+subjects1
+
+stages <- c(seq(1, 3, by = 1)) # In the first stage we collected 20 subjects, and the second stage we collected 10 subjects
+
+stage_n1 <- 0 # setting for count the loop times
+
+bfdf1 <- data.frame(effect = NA, N = NA, BF = NA, stage = NA, upper_threshold = NA, lower_threshold = NA) # initial a dataframe to store results
+
+for (i in stages) {
+  # selected the data by subjects in each stage
+  data1 <- subset(df.agg1, subj_idx %in% head(subjects1, i))
+
+  stage_n1 <- stage_n1 + 1 # starting to add the loop times
+
+  message(length(unique(data1$subj_idx)), " subjects")
+
+  message("The data collection stage is ", stage_n1)
+
+  data1$subj_idx <- as.factor(data1$subj_idx) # to factor
+
+  bayesfactors1 <- BayesFactor::generalTestBF(
+    rt_mean ~ valence * matchness * target * subj_idx - subj_idx:valence:matchness:target,# exclude the highest random effect
+    data = data.frame(data1),
+    whichRandom = "subj_idx",
+    neverExclude = "subj_idx",
+    whichModels = "top"
+  )
+
+  summary(bayesfactors1)
+
+  gc()
+
+  df_output1 <- as.data.frame(bayesfactors1) # restore the information of result
+
+  # setting the matchness:target:valence effect threshold of the BF to 10,1/10
+  bf_3wayinx1 <- data.frame(
+    effect = "matchness:target:valence", N = i,
+    BF = 1 / df_output1[1, 1], stage = stage_n1,
+    upper_threshold = 10, lower_threshold = 1 / 10
+  )
+
+  # setting the matchness:target:valence effect threshold of the BF to 6,1/6
+  bf_mtinx1 <- data.frame(
+    effect = "matchness:target", N = i,
+    BF = 1 / df_output1[2, 1], stage = stage_n1,
+    upper_threshold = 6, lower_threshold = 1 / 6
+  )
+
+
+  bf_tvinx1 <- data.frame(
+    effect = "target:valence", N = i,
+    BF = 1 / df_output1[3, 1], stage = stage_n1,
+    upper_threshold = 6, lower_threshold = 1 / 6
+  )
+
+
+  bf_mvinx1 <- data.frame(
+    effect = "matchness:valence", N = i,
+    BF = 1 / df_output1[4, 1], stage = stage_n1,
+    upper_threshold = 6, lower_threshold = 1 / 6
+  )
+
+  # setting the BF threshold of main effect of target to 10,1/10
+  bf_tmain1 <- data.frame(
+    effect = "target", N = i,
+    BF = 1 / df_output1[5, 1], stage = stage_n1,
+    upper_threshold = 10, lower_threshold = 1 / 10
+  )
+
+
+  bfdf1 <- rbind(bfdf1, bf_3wayinx1, bf_mtinx1, bf_tvinx1, bf_mvinx1, bf_tmain1)
+}
+```
+```{r}
+bfdf1
+```
+
