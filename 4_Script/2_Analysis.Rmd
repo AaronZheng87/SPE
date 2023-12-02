@@ -14,29 +14,40 @@ library(tidyverse)
 library(showtext)
 library(here)
 library(BayesFactor)
-source('../4_Script/utils.R')
 showtext.auto()
 #set the path#
-file_path <- here("5_Data", "3_test_yuanrui3")
+file_path <- here("5_Data", "exp1_osf_data")
+#change working directory
+bruceR::set.wd()
+source('./utils.R')
 ```
 ### import data
-```{r}
+```{r, include=F}
 files <- list.files(file_path, pattern = "csv", full.names = TRUE, recursive =T)
 all <- purrr::map_dfr(.x = files, .f = ~jspsycsv2df(.x))
 ```
+
 ### data preprocessing
 ```{r}
+# all <- all %>% 
+#   mutate_at(vars(word,valence), function(x){iconv(x, from = "GBK", to = "UTF-8")})
 data <- all %>% #exclude practice
   dplyr::filter(exp_condition == "Formal")
 ##################################
 # this is unnecessary for the true data!
-nrow(data)/3
-data[1:720,]$subj_idx <- '2'
-data[721:1440,]$subj_idx <- '3'
+# nrow(data)/3
+# data[1:720,]$subj_idx <- '2'
+# data[721:1440,]$subj_idx <- '3'
 ##################################
 data2 <- data %>% 
   dplyr::filter(rt != "null")
-data2$rt <- as.numeric(data2$rt)
+data2$rt <- as.numeric(data2$rt)/1000
+data2 = data2 |> mutate(
+  target_identity = if_else(target == "Word", word, valence), # first stimulus
+  test_identity = if_else(target == "Word", valence, word), # second stimulus
+)
+data2 = data2 |> mutate(ACC = as.numeric(correct))
+
 df.agg1 <- data2 %>% 
   dplyr::group_by(subj_idx, target, valence, matchness) %>% 
   dplyr::summarise(rt_mean = mean(rt), 
@@ -126,5 +137,125 @@ for (i in stages) {
 ```
 ```{r}
 bfdf1
+```
+
+```{r}
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("target", "matchness"),
+  dv = "rt"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("target", "matchness"),
+  dv = "correct"
+)
+
+```
+
+```{r}
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "valence"),
+  dv = "rt"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "word"),
+  dv = "rt"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "prime_identity"),
+  dv = "rt"
+)
+```
+```{r}
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "valence"),
+  dv = "correct"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "word"),
+  dv = "correct"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "prime_identity"),
+  dv = "correct"
+)
+```
+
+```{r}
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("target", "valence"),
+  dv = "rt"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("target", "word"),
+  dv = "rt"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("target", "target_identity"),
+  dv = "rt"
+)
+
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("target", "test_identity"),
+  dv = "rt"
+)
+```
+```{r}
+data2 |> papaja::apa_barplot(
+  id = "subj_idx",
+  factors = c("matchness", "target"),
+  dv = "rt"
+)
+```
+
+```{r}
+cbp <- ggokabeito::palette_okabe_ito(c(1,2,7,3,5,6,4))
+
+# theme
+theme_set(
+  papaja::theme_apa(base_size = 14, base_family = "serif")
+)
+
+aa = lifetable_group_by(data2, subj_idx, matchness, target)
+ 
+fig_hf = plot_EHA(aa, "hf", title = "hazard function")
+fig_caf = plot_EHA(aa, "caf", title = "accuracy conditional function")
+fig_pdf = plot_EHA(aa, "pdf", title = "pdf")
+fig_cdf = plot_EHA(aa, "cdf", title = "cdf")
+
+library(ggpubr)
+fig_EHA = ggarrange(
+  fig_hf, fig_pdf, fig_caf, fig_cdf, 
+  labels = c("A", "B", "C", "D"),
+  common.legend = T, legend = "right",
+  font.label = list(size = 13, face = "bold"))
+
+ggsave("Figs/figs_EHA_test.tiff", fig_EHA,
+       width = 9, height = 6, bg = "white",
+       dpi = 300, compression = "lzw")
+
+
+summary(data2$rt)
+
+
 ```
 
