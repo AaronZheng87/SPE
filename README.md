@@ -36,5 +36,5 @@ Exp2
 datapipe
 - [x] 测试上传数据
 - [x] 测试生成 condition
-- [] 应用 condition 生成到 exp2
+- [ ] 应用 condition 生成到 exp2
 
