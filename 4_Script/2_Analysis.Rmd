@@ -55,7 +55,8 @@ df.agg1 <- data2 %>%
   dplyr::ungroup()
 
 ```
-## Sequential Bayes factor Analysis(rmANOVA)
+## Sequential Bayes factor Analysis
+### rmANOVA and paired t-test
 
 ```{r}
 df.agg1$subj_idx <- as.factor(df.agg1$subj_idx)
@@ -64,7 +65,7 @@ subjects1 <- sort(unique(df.agg1$subj_idx)) # sort by subjects' id
 
 subjects1
 
-stages <- c(seq(1, 3, by = 1)) # In the first stage we collected 20 subjects, and the second stage we collected 10 subjects
+stages <- c(seq(4, 12, by = 2)) # In the first stage we collected 20 subjects, and the second stage we collected 10 subjects
 
 stage_n1 <- 0 # setting for count the loop times
 
@@ -93,6 +94,43 @@ for (i in stages) {
   summary(bayesfactors1)
 
   gc()
+  data1_match <- data1 %>% 
+  dplyr::filter(matchness == "Match")# filter the match condition
+  data_match_self <- data1_match %>% 
+    dplyr::filter(valence == "自我")# filter self condition in match condition
+  data_match_other <- data1_match %>% 
+    dplyr::filter(valence == "他人")#filter other
+  
+  data1_self <- data1 %>% 
+  dplyr::filter(valence == "自我")#filter self condition
+  data_self_word <- data1_self %>% 
+    dplyr::filter(target == "Word")#filter word condition in self condition
+  data_self_Image <- data1_self %>% 
+    dplyr::filter(target == "Image")
+  
+  message(sum(data_match_self$target == data_match_other$target), " conditions matching")# check if other condition is matching
+  
+  message(sum(data_self_word$matchness == data_self_Image$matchness), " conditions matching")#check
+  
+  self_other_m <- BayesFactor::ttestBF(x=data_match_self$rt_mean,
+                                       y=data_match_other$rt_mean, paired = TRUE)# paired t test 
+  word_image_m <- BayesFactor::ttestBF(x=data_self_word$rt_mean, y=data_self_Image$rt_mean, paired = TRUE)
+
+  
+  self_other_output <- as.data.frame(self_other_m)[1,1]
+  word_image_output <- as.data.frame(word_image_m)[1,1]
+  
+  bf_bo_match <- data.frame(
+    effect = "Match_self-Match_other", N = i,
+    BF = self_other_output, stage = stage_n1,
+    upper_threshold = 10, lower_threshold = 1 / 10
+  )
+  
+  bf_iw_self <- data.frame(
+  effect = "Self_Image-Self_Word", N = i,
+  BF = word_image_output, stage = stage_n1,
+  upper_threshold = 10, lower_threshold = 1 / 10
+)
 
   df_output1 <- as.data.frame(bayesfactors1) # restore the information of result
 
@@ -132,11 +170,21 @@ for (i in stages) {
   )
 
 
-  bfdf1 <- rbind(bfdf1, bf_3wayinx1, bf_mtinx1, bf_tvinx1, bf_mvinx1, bf_tmain1)
+  bfdf1 <- rbind(bfdf1, bf_3wayinx1, bf_mtinx1, bf_tvinx1, bf_mvinx1, bf_tmain1, 
+                 bf_bo_match, bf_iw_self)
 }
+
+
 ```
 ```{r}
-bfdf1
+bfdf1 %>% 
+  drop_na() %>% 
+  ggplot(aes(x=N, y=BF)) +
+  geom_hline(aes(yintercept = upper_threshold), color = 'red') + 
+  geom_hline(aes(yintercept = lower_threshold), color = 'blue') + 
+  geom_line() + 
+  geom_point() + 
+  facet_wrap(~effect, scales = "free_y")
 ```
 
 ```{r}

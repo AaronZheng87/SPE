@@ -14,7 +14,7 @@ Exp1
 需要讨论的有两个问题：
 1. 贝叶斯因子的调整
 分为两个角度。 
-- [ ] 首先是SPE效应：需要包括valence的主效应，valence和匹配的交互效应。 传鹏说可能还需要考虑匹配条件下，self vs. other 的简单效应。
+- [x] 首先是SPE效应：需要包括valence的主效应，valence和匹配的交互效应。 传鹏说可能还需要考虑匹配条件下，self vs. other 的简单效应。
 - [ ] 其次是呈现顺序效应：需要包括呈现顺序(target)的主效应，target 和 valence的交互作用，以及在 self 条件下 target 的简单效应。
 对于那个简单效应的BF好像比较麻烦，传鹏说需要我们一起商量下那个 contrast coding 怎么弄。
 
